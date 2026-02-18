@@ -1,0 +1,2933 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PsicoNeuro Rehab - Reabilitação Cognitiva Profissional</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+        
+        /* Landing Page Styles */
+        .landing-page { display: block; }
+        .landing-page.hidden { display: none; }
+        
+        .landing-hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+        }
+        
+        .landing-hero h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .landing-hero p {
+            font-size: 1.5em;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+        
+        .landing-cta {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-landing {
+            padding: 18px 40px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-landing-primary {
+            background: white;
+            color: #1e3c72;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .btn-landing-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        
+        .btn-landing-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-landing-secondary:hover {
+            background: white;
+            color: #1e3c72;
+        }
+        
+        .app-wrapper { display: none; padding: 20px; }
+        .app-wrapper.active { display: block; }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.8em;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .header h1::before {
+            content: "🧠 ";
+        }
+        
+        .screen {
+            display: none;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 50px auto;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 2em;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .close-modal:hover {
+            color: #000;
+        }
+        
+        /* LGPD Banner */
+        .lgpd-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e3c72;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            z-index: 999;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .lgpd-banner button {
+            background: white;
+            color: #1e3c72;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px 5px;
+        }
+        
+        /* Tela de Seleção de Portal */
+        .portal-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+        
+        .portal-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 30px;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .portal-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .portal-card.professional {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+        
+        .portal-card.patient {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .portal-card.pricing {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .portal-card .icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .portal-card h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+        
+        .portal-card p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        /* Pricing */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .pricing-card {
+            background: white;
+            border: 3px solid #e0e0e0;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #1e3c72;
+        }
+        
+        .pricing-card.featured {
+            border-color: #1e3c72;
+            border-width: 4px;
+            position: relative;
+        }
+        
+        .pricing-card.featured::before {
+            content: "⭐ MAIS POPULAR";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e3c72;
+            color: white;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .pricing-card h3 {
+            font-size: 2em;
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+        
+        .pricing-card .price {
+            font-size: 3em;
+            font-weight: bold;
+            color: #1e3c72;
+            margin: 20px 0;
+        }
+        
+        .pricing-card .price span {
+            font-size: 0.4em;
+            color: #666;
+        }
+        
+        .pricing-card ul {
+            list-style: none;
+            text-align: left;
+            margin: 20px 0;
+        }
+        
+        .pricing-card ul li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .pricing-card ul li::before {
+            content: "✓ ";
+            color: #4caf50;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        /* Formulários */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #1e3c72;
+        }
+        
+        /* Botões */
+        .btn {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .btn-patient {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .link-btn {
+            background: none;
+            color: #1e3c72;
+            text-decoration: underline;
+            padding: 10px;
+            cursor: pointer;
+            border: none;
+            font-size: 1em;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .link-btn:hover {
+            color: #2a5298;
+        }
+        
+        /* Dashboard */
+        .dashboard-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .dashboard-header h2 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .stat-card .number {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .label {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+        
+        /* Jogos */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .game-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-color: #1e3c72;
+        }
+        
+        .game-card .game-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .game-card h3 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        
+        .game-card p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        /* Área de Jogo */
+        .game-area {
+            background: #f5f5f5;
+            border-radius: 15px;
+            padding: 40px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .game-stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .game-stats .stat {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        /* Resultados */
+        .result-screen {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .result-screen h2 {
+            color: #1e3c72;
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        
+        .evolution-message {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            font-size: 1.3em;
+            line-height: 1.8;
+        }
+        
+        .result-stats {
+            background: #f5f5f5;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .result-stats p {
+            padding: 10px 0;
+            font-size: 1.1em;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 30px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 1s ease;
+        }
+        
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            padding: 15px 30px;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .portal-card {
+                padding: 30px 20px;
+            }
+            
+            .portal-card h2 {
+                font-size: 1.5em;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Library Cards */
+        .library-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .library-card:hover {
+            border-color: #1e3c72;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .library-card h4 {
+            margin-bottom: 10px;
+        }
+        
+        .library-card p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LANDING PAGE -->
+<div class="landing-page" id="landingPage">
+    <div class="landing-hero">
+        <div>
+            <h1>🧠 PsicoNeuro Rehab</h1>
+            <p>Plataforma Profissional de Reabilitação Cognitiva e Treino Cerebral</p>
+            <p style="font-size: 1.2em; margin-bottom: 30px;">Para TDAH, Dislexia, Discalculia, Demências, TEA, AVC e Performance Cognitiva</p>
+            <div class="landing-cta">
+                <button class="btn-landing btn-landing-primary" onclick="enterApp()">Começar Agora</button>
+                <button class="btn-landing btn-landing-secondary" onclick="enterApp(); showPricingScreen();">Ver Planos</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- APP WRAPPER -->
+<div class="app-wrapper" id="appWrapper">
+    
+    <!-- LGPD Banner -->
+    <div id="lgpdBanner" class="lgpd-banner" style="display: none;">
+        <p style="margin-bottom: 15px; font-size: 1.1em;">
+            🔒 <strong>Privacidade e Segurança de Dados</strong><br>
+            Esta plataforma de saúde está em conformidade com a LGPD (Lei Geral de Proteção de Dados).<br>
+            Seus dados são armazenados de forma segura e utilizados apenas para fins terapêuticos.
+        </p>
+        <button onclick="acceptLGPD()">Entendi e Aceito</button>
+        <button onclick="showPrivacyPolicy()">Política de Privacidade</button>
+    </div>
+    
+    <!-- Modal Genérico -->
+    <div id="genericModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>PsicoNeuro Rehab</h1>
+            <p style="font-size: 1.2em; color: #666;">Plataforma Profissional de Reabilitação Cognitiva e Treino Cerebral</p>
+        </div>
+        
+        <!-- Seleção de Portal -->
+        <div id="portalSelectionScreen" class="screen active">
+            <h2 style="text-align: center; margin-bottom: 30px;">Selecione seu Portal de Acesso</h2>
+            <div class="portal-selection">
+                <div class="portal-card professional" onclick="selectPortal('professional')">
+                    <div class="icon">👨‍⚕️</div>
+                    <h2>Profissional</h2>
+                    <p style="margin-top: 15px;">Psicólogos e Terapeutas</p>
+                    <p style="margin-top: 15px; font-size: 0.9em;">Gestão de pacientes, métricas, relatórios e biblioteca científica</p>
+                </div>
+                <div class="portal-card patient" onclick="selectPortal('patient')">
+                    <div class="icon">👨‍👩‍👧‍👦</div>
+                    <h2>Paciente/Família</h2>
+                    <p style="margin-top: 15px;">Treino Cognitivo em Casa</p>
+                    <p style="margin-top: 15px; font-size: 0.9em;">Jogos cognitivos, acompanhamento de progresso e conquistas</p>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 40px;">
+                <button class="btn btn-success" onclick="showPricingScreen()">💰 Ver Planos e Preços</button>
+            </div>
+        </div>
+        
+        <!-- Tela de Preços -->
+        <div id="pricingScreen" class="screen">
+            <h2 style="text-align: center; margin-bottom: 10px;">Planos e Preços</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 40px;">Escolha o plano ideal para você ou sua clínica</p>
+            
+            <h3 style="text-align: center; margin: 40px 0 20px 0; color: #1e3c72;">👨‍👩‍👧‍👦 Planos para Pacientes e Famílias</h3>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Mensal</h3>
+                    <div class="price">R$ 49<span>/mês</span></div>
+                    <ul>
+                        <li>Acesso ilimitado aos 16 jogos</li>
+                        <li>Acompanhamento de evolução</li>
+                        <li>Protocolos personalizados</li>
+                        <li>Relatórios de progresso</li>
+                        <li>Suporte por email</li>
+                    </ul>
+                    <button class="btn btn-patient" onclick="alert('Entre em contato: melpsicologa@gmail.com')">Assinar Agora</button>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <h3>Anual</h3>
+                    <div class="price">R$ 39<span>/mês</span></div>
+                    <p style="color: #4caf50; font-weight: bold; margin-bottom: 10px;">Economize R$ 120/ano!</p>
+                    <ul>
+                        <li>Tudo do plano mensal</li>
+                        <li>2 meses grátis</li>
+                        <li>Prioridade no suporte</li>
+                        <li>Acesso antecipado a novos jogos</li>
+                        <li>Certificado de conclusão</li>
+                    </ul>
+                    <button class="btn btn-patient" onclick="alert('Entre em contato: melpsicologa@gmail.com')">Assinar Agora</button>
+                </div>
+            </div>
+            
+            <h3 style="text-align: center; margin: 60px 0 20px 0; color: #1e3c72;">👨‍⚕️ Planos para Profissionais</h3>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Individual</h3>
+                    <div class="price">R$ 149<span>/mês</span></div>
+                    <ul>
+                        <li>Até 20 pacientes ativos</li>
+                        <li>Gestão completa de pacientes</li>
+                        <li>Biblioteca científica</li>
+                        <li>Relatórios profissionais</li>
+                        <li>Métricas e análises</li>
+                        <li>Suporte prioritário</li>
+                    </ul>
+                    <button class="btn" onclick="alert('Entre em contato: melpsicologa@gmail.com')">Assinar Agora</button>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <h3>Clínica</h3>
+                    <div class="price">R$ 99<span>/mês por profissional</span></div>
+                    <p style="color: #4caf50; font-weight: bold; margin-bottom: 10px;">Mínimo 3 profissionais</p>
+                    <ul>
+                        <li>Pacientes ilimitados</li>
+                        <li>Múltiplos profissionais</li>
+                        <li>Tudo do plano individual</li>
+                        <li>Dashboard da clínica</li>
+                        <li>Branding personalizado</li>
+                        <li>Suporte dedicado</li>
+                        <li>Treinamento da equipe</li>
+                    </ul>
+                    <button class="btn" onclick="alert('Entre em contato: melpsicologa@gmail.com')">Solicitar Proposta</button>
+                </div>
+                
+                <div class="pricing-card">
+                    <h3>Anual Profissional</h3>
+                    <div class="price">R$ 119<span>/mês</span></div>
+                    <p style="color: #4caf50; font-weight: bold; margin-bottom: 10px;">Economize R$ 360/ano!</p>
+                    <ul>
+                        <li>Tudo do plano individual</li>
+                        <li>3 meses grátis</li>
+                        <li>Até 30 pacientes ativos</li>
+                        <li>Certificado profissional</li>
+                        <li>Atualizações prioritárias</li>
+                    </ul>
+                    <button class="btn" onclick="alert('Entre em contato: melpsicologa@gmail.com')">Assinar Agora</button>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <p style="color: #666; margin-bottom: 20px;">💳 Aceitamos cartão de crédito, débito, PIX e boleto</p>
+                <p style="color: #666; margin-bottom: 20px;">✅ Garantia de 7 dias - Teste sem compromisso</p>
+                <p style="color: #666; margin-bottom: 30px;">📧 Dúvidas? Entre em contato: <strong>melpsicologa@gmail.com</strong></p>
+                <button class="link-btn" onclick="backToPortalSelection()">← Voltar</button>
+            </div>
+        </div>
+        
+        <!-- Login Profissional -->
+        <div id="professionalLoginScreen" class="screen">
+            <h2 style="text-align: center; margin-bottom: 30px;">Login Profissional</h2>
+            <div class="form-group">
+                <label>CRP:</label>
+                <input type="text" id="profCRP" placeholder="00/00000">
+            </div>
+            <div class="form-group">
+                <label>Senha:</label>
+                <input type="password" id="profPassword" placeholder="Sua senha">
+            </div>
+            <button class="btn" onclick="loginProfessional()">Entrar</button>
+            <button class="link-btn" onclick="showRegisterProfessional()">Não tem cadastro? Registre-se</button>
+            <button class="link-btn" onclick="backToPortalSelection()">← Voltar</button>
+        </div>
+        
+        <!-- Registro Profissional -->
+        <div id="professionalRegisterScreen" class="screen">
+            <h2 style="text-align: center; margin-bottom: 30px;">Cadastro Profissional</h2>
+            <div class="form-group">
+                <label>Nome Completo:*</label>
+                <input type="text" id="profRegName" required>
+            </div>
+            <div class="form-group">
+                <label>CRP:*</label>
+                <input type="text" id="profRegCRP" placeholder="00/00000" required>
+            </div>
+            <div class="form-group">
+                <label>Email:*</label>
+                <input type="email" id="profRegEmail" required>
+            </div>
+            <div class="form-group">
+                <label>Senha:*</label>
+                <input type="password" id="profRegPassword" required>
+            </div>
+            <button class="btn" onclick="registerProfessional()">Cadastrar</button>
+            <button class="link-btn" onclick="showProfessionalLogin()">Já tem cadastro? Faça login</button>
+        </div>
+        
+        <!-- Dashboard Profissional -->
+        <div id="professionalDashboardScreen" class="screen">
+            <div class="dashboard-header">
+                <h2 id="professionalWelcome"></h2>
+                <p id="professionalCRP"></p>
+                <button class="btn btn-secondary" onclick="logoutProfessional()" style="max-width: 200px; margin-top: 15px;">Sair</button>
+            </div>
+            
+            <div class="nav-tabs">
+                <button class="nav-btn active" onclick="showProfessionalSection('patients')">Pacientes</button>
+                <button class="nav-btn" onclick="showProfessionalSection('addPatient')">Adicionar Paciente</button>
+                <button class="nav-btn" onclick="showProfessionalSection('library')">Biblioteca Científica</button>
+                <button class="nav-btn" onclick="showProfessionalSection('reports')">Relatórios</button>
+            </div>
+            
+            <div id="profPatientsSection">
+                <h3 style="margin-bottom: 20px;">Lista de Pacientes</h3>
+                <div id="patientsList" style="background: #f5f5f5; padding: 30px; border-radius: 15px;">
+                    <!-- Lista será preenchida dinamicamente -->
+                </div>
+            </div>
+            
+            <div id="profAddPatientSection" style="display: none;">
+                <h3 style="margin-bottom: 20px;">Adicionar Novo Paciente</h3>
+                <div style="background: #f5f5f5; padding: 30px; border-radius: 15px;">
+                    <div class="form-group">
+                        <label>Nome do Paciente:*</label>
+                        <input type="text" id="newPatientName">
+                    </div>
+                    <div class="form-group">
+                        <label>CPF:*</label>
+                        <input type="text" id="newPatientCPF" placeholder="000.000.000-00">
+                    </div>
+                    <div class="form-group">
+                        <label>Patologia:*</label>
+                        <select id="newPatientPathology">
+                            <option value="">Selecione...</option>
+                            <option value="tdah">TDAH</option>
+                            <option value="dislexia">Dislexia</option>
+                            <option value="discalculia">Discalculia</option>
+                            <option value="demencia">Demências</option>
+                            <option value="tea">TEA (Autismo)</option>
+                            <option value="avc">AVC</option>
+                            <option value="performance">Performance Cognitiva (Otimização)</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="addPatient()">Adicionar Paciente</button>
+                </div>
+            </div>
+            
+            <div id="profLibrarySection" style="display: none;">
+                <h3 style="margin-bottom: 20px;">Biblioteca Científica</h3>
+                <div style="background: #f5f5f5; padding: 30px; border-radius: 15px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                        <div class="library-card" onclick="showLibraryContent('neuroplasticity')">
+                            <h4 style="color: #1e3c72; margin-bottom: 10px;">📚 Fundamentos da Neuroplasticidade</h4>
+                            <p>Entenda como o cérebro se adapta e reorganiza através do treino cognitivo.</p>
+                        </div>
+                        <div class="library-card" onclick="showLibraryContent('tdah')">
+                            <h4 style="color: #ff9800; margin-bottom: 10px;">🎯 Protocolo TDAH</h4>
+                            <p>Estratégias baseadas em evidências para reabilitação de atenção e funções executivas.</p>
+                        </div>
+                        <div class="library-card" onclick="showLibraryContent('dislexia')">
+                            <h4 style="color: #2196f3; margin-bottom: 10px;">📖 Protocolo Dislexia</h4>
+                            <p>Intervenções para consciência fonológica e processamento de leitura.</p>
+                        </div>
+                        <div class="library-card" onclick="showLibraryContent('discalculia')">
+                            <h4 style="color: #4caf50; margin-bottom: 10px;">🔢 Protocolo Discalculia</h4>
+                            <p>Treino de senso numérico e habilidades matemáticas básicas.</p>
+                        </div>
+                        <div class="library-card" onclick="showLibraryContent('demencia')">
+                            <h4 style="color: #9c27b0; margin-bottom: 10px;">🧠 Protocolo Demências</h4>
+                            <p>Estimulação cognitiva para manutenção de funções e qualidade de vida.</p>
+                        </div>
+                        <div class="library-card" onclick="showLibraryContent('tea')">
+                            <h4 style="color: #00bcd4; margin-bottom: 10px;">🧩 Protocolo TEA</h4>
+                            <p>Treino de flexibilidade cognitiva e funções executivas.</p>
+                        </div>
+                        <div class="library-card" onclick="showLibraryContent('avc')">
+                            <h4 style="color: #f44336; margin-bottom: 10px;">❤️ Protocolo AVC</h4>
+                            <p>Reabilitação neuropsicológica pós-AVC baseada em neuroplasticidade.</p>
+                        </div>
+                        <div class="library-card" onclick="showLibraryContent('performance')">
+                            <h4 style="color: #11998e; margin-bottom: 10px;">⚡ Performance Cognitiva</h4>
+                            <p>Otimização de funções cognitivas para alta performance profissional e acadêmica.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="profReportsSection" style="display: none;">
+                <h3 style="margin-bottom: 20px;">Relatórios</h3>
+                <div style="background: #f5f5f5; padding: 30px; border-radius: 15px;">
+                    <p style="text-align: center; color: #666;">Selecione um paciente para visualizar relatórios detalhados de evolução.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Login Paciente -->
+        <div id="patientLoginScreen" class="screen">
+            <h2 style="text-align: center; margin-bottom: 30px;">Login Paciente</h2>
+            <div class="form-group">
+                <label>CPF:</label>
+                <input type="text" id="patientCPF" placeholder="000.000.000-00">
+            </div>
+            <div class="form-group">
+                <label>Senha:</label>
+                <input type="password" id="patientPassword" placeholder="Sua senha">
+            </div>
+            <button class="btn btn-patient" onclick="loginPatient()">Entrar</button>
+            <button class="link-btn" onclick="showRegisterPatient()">Não tem cadastro? Registre-se</button>
+            <button class="link-btn" onclick="backToPortalSelection()">← Voltar</button>
+        </div>
+        
+        <!-- Registro Paciente -->
+        <div id="patientRegisterScreen" class="screen">
+            <h2 style="text-align: center; margin-bottom: 30px;">Cadastro de Paciente</h2>
+            <div class="form-group">
+                <label>Nome Completo:*</label>
+                <input type="text" id="patRegName" required>
+            </div>
+            <div class="form-group">
+                <label>CPF:*</label>
+                <input type="text" id="patRegCPF" placeholder="000.000.000-00" required>
+            </div>
+            <div class="form-group">
+                <label>Data de Nascimento:*</label>
+                <input type="date" id="patRegBirth" required>
+            </div>
+            <div class="form-group">
+                <label>Patologia Principal:*</label>
+                <select id="patRegPathology" required>
+                    <option value="">Selecione...</option>
+                    <option value="tdah">TDAH - Transtorno do Déficit de Atenção e Hiperatividade</option>
+                    <option value="dislexia">Dislexia</option>
+                    <option value="discalculia">Discalculia</option>
+                    <option value="demencia">Demência (Alzheimer e outras)</option>
+                    <option value="tea">TEA - Transtorno do Espectro Autista</option>
+                    <option value="avc">AVC - Acidente Vascular Cerebral</option>
+                    <option value="performance">Performance Cognitiva (Otimização e Alta Performance)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Senha:*</label>
+                <input type="password" id="patRegPassword" required>
+            </div>
+            <button class="btn btn-patient" onclick="registerPatient()">Cadastrar</button>
+            <button class="link-btn" onclick="showPatientLogin()">Já tem cadastro? Faça login</button>
+        </div>
+        
+        <!-- Dashboard Paciente -->
+        <div id="patientDashboardScreen" class="screen">
+            <div class="dashboard-header">
+                <h2 id="patientWelcome"></h2>
+                <p id="patientPathology"></p>
+                <button class="btn btn-secondary" onclick="logoutPatient()" style="max-width: 200px; margin-top: 15px;">Sair</button>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number" id="totalSessions">0</div>
+                    <div class="label">Sessões Realizadas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="totalPoints">0</div>
+                    <div class="label">Pontos Totais</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="avgPrecision">0%</div>
+                    <div class="label">Precisão Média</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="bestStreak">0</div>
+                    <div class="label">Melhor Sequência</div>
+                </div>
+            </div>
+            
+            <h3 style="margin: 40px 0 20px 0;">Jogos Recomendados para Você</h3>
+            <div id="recommendedGames" class="games-grid">
+                <!-- Jogos recomendados serão inseridos aqui -->
+            </div>
+            
+            <h3 style="margin: 40px 0 20px 0;">Todos os Jogos Cognitivos</h3>
+            <div class="games-grid" id="allGamesGrid">
+                <!-- Todos os jogos serão inseridos aqui -->
+            </div>
+        </div>
+        
+        <!-- Tela de Jogo -->
+        <div id="gameScreen" class="screen">
+            <div class="game-header">
+                <button class="btn btn-secondary" onclick="quitGame()" style="max-width: 150px;">Sair do Jogo</button>
+                <div class="game-stats">
+                    <div class="stat">⏱️ <span id="timer">60</span>s</div>
+                    <div class="stat">✅ <span id="hits">0</span></div>
+                    <div class="stat">❌ <span id="errors">0</span></div>
+                    <div class="stat">⭐ <span id="score">0</span></div>
+                </div>
+            </div>
+            <div id="gameArea" class="game-area">
+                <!-- Área do jogo será preenchida dinamicamente -->
+            </div>
+        </div>
+        
+        <!-- Tela de Resultados -->
+        <div id="resultScreen" class="screen result-screen">
+            <h2>🎉 Parabéns!</h2>
+            <div id="evolutionMessage" class="evolution-message">
+                <!-- Mensagem de evolução será inserida aqui -->
+            </div>
+            
+            <div class="chart-container">
+                <h3 style="margin-bottom: 20px;">Evolução Cognitiva</h3>
+                <div style="margin: 20px 0;">
+                    <p style="text-align: left; margin-bottom: 5px;">Precisão</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="precisionProgress" style="width: 0%;">0%</div>
+                    </div>
+                </div>
+                <div style="margin: 20px 0;">
+                    <p style="text-align: left; margin-bottom: 5px;">Velocidade</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="speedProgress" style="width: 0%;">0%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-stats">
+                <p><strong>Jogo:</strong> <span id="resultGame"></span></p>
+                <p><strong>Habilidade:</strong> <span id="resultSkill"></span></p>
+                <p><strong>Acertos:</strong> <span id="resultHits"></span></p>
+                <p><strong>Erros:</strong> <span id="resultErrors"></span></p>
+                <p><strong>Precisão:</strong> <span id="resultPrecision"></span>%</p>
+                <p><strong>Pontuação:</strong> <span id="resultScore"></span></p>
+            </div>
+            <button class="btn" onclick="backToPatientDashboard()">Voltar ao Dashboard</button>
+        </div>
+    </div>
+    
+    <script>
+        // Variáveis globais
+        let currentProfessional = null;
+        let currentPatient = null;
+        let gameState = null;
+        let gameTimer = null;
+        
+        // Protocolos por patologia
+        const pathologyProtocols = {
+            tdah: ['attention1', 'memory2', 'attention4', 'memory3'],
+            dislexia: ['language1', 'memory2', 'language2', 'language3'],
+            discalculia: ['executive4', 'memory2', 'memory3', 'attention2'],
+            demencia: ['memory1', 'memory4', 'language2', 'language4'],
+            tea: ['executive2', 'executive1', 'executive4', 'language4'],
+            avc: ['attention1', 'memory1', 'attention2', 'executive1'],
+            performance: ['attention1', 'memory3', 'executive1', 'executive4']
+        };
+        
+        // Definição dos jogos
+        const games = {
+            attention1: { name: '⚡ Foco Laser', skill: 'Atenção sustentada', icon: '🎯' },
+            attention2: { name: '🔍 Caça ao Tesouro', skill: 'Atenção seletiva', icon: '🔍' },
+            attention3: { name: '🎭 Multitarefa Master', skill: 'Atenção dividida', icon: '⚡' },
+            attention4: { name: '🌈 Cores em Conflito', skill: 'Controle inibitório', icon: '🎨' },
+            memory1: { name: '🎴 Pares Perfeitos', skill: 'Memória visual', icon: '🧩' },
+            memory2: { name: '🔐 Código Secreto', skill: 'Memória de trabalho', icon: '🔢' },
+            memory3: { name: '🧩 Memória Ativa', skill: 'Memória de trabalho', icon: '🎲' },
+            memory4: { name: '✨ Palavras Mágicas', skill: 'Memória verbal', icon: '📝' },
+            language1: { name: '🌪️ Tempestade de Palavras', skill: 'Geração de palavras', icon: '💬' },
+            language2: { name: '🎯 Nome Certo', skill: 'Acesso lexical', icon: '🖼️' },
+            language3: { name: '📝 Mestre das Frases', skill: 'Compreensão', icon: '✍️' },
+            language4: { name: '🗂️ Organiza Tudo', skill: 'Organização semântica', icon: '🗂️' },
+            executive1: { name: '🗼 Torre Estratégica', skill: 'Planejamento', icon: '🗼' },
+            executive2: { name: '🃏 Mestre das Cartas', skill: 'Flexibilidade', icon: '🃏' },
+            executive3: { name: '🧭 Caminho Inteligente', skill: 'Navegação espacial', icon: '🌀' },
+            executive4: { name: '🔢 Padrões Ocultos', skill: 'Raciocínio lógico', icon: '🔄' }
+        };
+        
+        // Conteúdo da biblioteca científica
+        const libraryContent = {
+            neuroplasticity: {
+                title: '📚 Fundamentos da Neuroplasticidade',
+                content: `
+                    <h3>O que é Neuroplasticidade?</h3>
+                    <p>A neuroplasticidade é a capacidade do cérebro de se reorganizar formando novas conexões neurais ao longo da vida. Este processo permite que os neurônios se adaptem a novas situações ou mudanças no ambiente.</p>
+                    
+                    <h3>Princípios Fundamentais:</h3>
+                    <ul>
+                        <li><strong>Use-o ou Perca-o:</strong> Circuitos neurais não utilizados tendem a se enfraquecer</li>
+                        <li><strong>Especificidade:</strong> O treino deve ser específico para a função que se deseja melhorar</li>
+                        <li><strong>Repetição:</strong> A prática repetida fortalece as conexões neurais</li>
+                        <li><strong>Intensidade:</strong> O treino deve ser desafiador para promover mudanças</li>
+                        <li><strong>Tempo:</strong> Mudanças significativas requerem treino consistente ao longo do tempo</li>
+                    </ul>
+                    
+                    <h3>Aplicação Clínica:</h3>
+                    <p>A reabilitação cognitiva baseia-se nesses princípios para promover recuperação e melhora de funções cognitivas em diversas condições neurológicas e psiquiátricas.</p>
+                    
+                    <h3>Referências:</h3>
+                    <p style="font-size: 0.9em; color: #666;">
+                    - Kleim, J. A., & Jones, T. A. (2008). Principles of experience-dependent neural plasticity. Journal of Speech, Language, and Hearing Research.<br>
+                    - Demarin, V., et al. (2014). Neuroplasticity. Periodicum Biologorum, 116(2), 209-211.
+                    </p>
+                `
+            },
+            tdah: {
+                title: '🎯 Protocolo TDAH',
+                content: `
+                    <h3>Transtorno do Déficit de Atenção e Hiperatividade</h3>
+                    <p>O TDAH é caracterizado por desatenção, hiperatividade e impulsividade que interferem no funcionamento diário.</p>
+                    
+                    <h3>Funções Cognitivas Afetadas:</h3>
+                    <ul>
+                        <li>Atenção sustentada</li>
+                        <li>Memória de trabalho</li>
+                        <li>Controle inibitório</li>
+                        <li>Flexibilidade cognitiva</li>
+                        <li>Planejamento e organização</li>
+                    </ul>
+                    
+                    <h3>Protocolo de Treino Recomendado:</h3>
+                    <ul>
+                        <li><strong>Frequência:</strong> 30-45 minutos/dia, 5-7 dias/semana</li>
+                        <li><strong>Foco:</strong> Jogos de atenção sustentada, memória de trabalho e controle inibitório</li>
+                        <li><strong>Progressão:</strong> Aumentar dificuldade gradualmente conforme melhora</li>
+                        <li><strong>Duração:</strong> Mínimo 8-12 semanas para resultados significativos</li>
+                    </ul>
+                    
+                    <h3>Jogos Recomendados:</h3>
+                    <p>⚡ Foco Laser, 🔐 Código Secreto, 🌈 Cores em Conflito, 🧩 Memória Ativa</p>
+                    
+                    <h3>Evidências Científicas:</h3>
+                    <p style="font-size: 0.9em; color: #666;">
+                    - Klingberg, T., et al. (2005). Computerized training of working memory in children with ADHD. Journal of the American Academy of Child & Adolescent Psychiatry.<br>
+                    - Cortese, S., et al. (2015). Cognitive training for attention-deficit/hyperactivity disorder. Journal of the American Academy of Child & Adolescent Psychiatry.
+                    </p>
+                `
+            },
+            dislexia: {
+                title: '📖 Protocolo Dislexia',
+                content: `
+                    <h3>Dislexia do Desenvolvimento</h3>
+                    <p>A dislexia é um transtorno específico de aprendizagem caracterizado por dificuldades na leitura e escrita, apesar de inteligência normal.</p>
+                    
+                    <h3>Funções Cognitivas Afetadas:</h3>
+                    <ul>
+                        <li>Consciência fonológica</li>
+                        <li>Velocidade de processamento</li>
+                        <li>Memória de trabalho fonológica</li>
+                        <li>Nomeação rápida</li>
+                        <li>Acesso lexical</li>
+                    </ul>
+                    
+                    <h3>Protocolo de Treino Recomendado:</h3>
+                    <ul>
+                        <li><strong>Frequência:</strong> 30-45 minutos/dia, 5-7 dias/semana</li>
+                        <li><strong>Foco:</strong> Jogos de linguagem, consciência fonológica e memória verbal</li>
+                        <li><strong>Abordagem:</strong> Multissensorial e estruturada</li>
+                        <li><strong>Duração:</strong> Intervenção prolongada (6-12 meses)</li>
+                    </ul>
+                    
+                    <h3>Jogos Recomendados:</h3>
+                    <p>🌪️ Tempestade de Palavras, 🔐 Código Secreto, 🎯 Nome Certo, 📝 Mestre das Frases</p>
+                    
+                    <h3>Evidências Científicas:</h3>
+                    <p style="font-size: 0.9em; color: #666;">
+                    - Shaywitz, S. E., & Shaywitz, B. A. (2008). Paying attention to reading: The neurobiology of reading and dyslexia. Development and Psychopathology.<br>
+                    - Gabrieli, J. D. (2009). Dyslexia: a new synergy between education and cognitive neuroscience. Science.
+                    </p>
+                `
+            },
+            discalculia: {
+                title: '🔢 Protocolo Discalculia',
+                content: `
+                    <h3>Discalculia do Desenvolvimento</h3>
+                    <p>A discalculia é um transtorno específico de aprendizagem caracterizado por dificuldades persistentes em compreender e manipular números.</p>
+                    
+                    <h3>Funções Cognitivas Afetadas:</h3>
+                    <ul>
+                        <li>Senso numérico</li>
+                        <li>Memória de trabalho numérica</li>
+                        <li>Raciocínio lógico-matemático</li>
+                        <li>Atenção visual-espacial</li>
+                        <li>Processamento de magnitude</li>
+                    </ul>
+                    
+                    <h3>Protocolo de Treino Recomendado:</h3>
+                    <ul>
+                        <li><strong>Frequência:</strong> 30-40 minutos/dia, 5 dias/semana</li>
+                        <li><strong>Foco:</strong> Jogos de raciocínio lógico, sequências e memória de trabalho</li>
+                        <li><strong>Abordagem:</strong> Concreta para abstrata, com representações visuais</li>
+                        <li><strong>Duração:</strong> Intervenção prolongada e sistemática</li>
+                    </ul>
+                    
+                    <h3>Jogos Recomendados:</h3>
+                    <p>🔢 Padrões Ocultos, 🔐 Código Secreto, 🧩 Memória Ativa, 🔍 Caça ao Tesouro</p>
+                    
+                    <h3>Evidências Científicas:</h3>
+                    <p style="font-size: 0.9em; color: #666;">
+                    - Butterworth, B., et al. (2011). Dyscalculia: from brain to education. Science.<br>
+                    - Kaufmann, L., et al. (2013). Dyscalculia from a developmental and differential perspective. Frontiers in Psychology.
+                    </p>
+                `
+            },
+            demencia: {
+                title: '🧠 Protocolo Demências',
+                content: `
+                    <h3>Demências e Estimulação Cognitiva</h3>
+                    <p>As demências são síndromes caracterizadas por declínio cognitivo progressivo que interfere nas atividades diárias.</p>
+                    
+                    <h3>Funções Cognitivas Afetadas:</h3>
+                    <ul>
+                        <li>Memória episódica</li>
+                        <li>Linguagem (nomeação, compreensão)</li>
+                        <li>Orientação temporal e espacial</li>
+                        <li>Funções executivas</li>
+                        <li>Atenção</li>
+                    </ul>
+                    
+                    <h3>Protocolo de Treino Recomendado:</h3>
+                    <ul>
+                        <li><strong>Frequência:</strong> 20-30 minutos/dia, 3-5 dias/semana</li>
+                        <li><strong>Foco:</strong> Manutenção de funções preservadas e estimulação global</li>
+                        <li><strong>Abordagem:</strong> Adaptada ao estágio da doença, sem frustração</li>
+                        <li><strong>Objetivo:</strong> Manter qualidade de vida e retardar declínio</li>
+                    </ul>
+                    
+                    <h3>Jogos Recomendados:</h3>
+                    <p>🎴 Pares Perfeitos, ✨ Palavras Mágicas, 🎯 Nome Certo, 🗂️ Organiza Tudo</p>
+                    
+                    <h3>Evidências Científicas:</h3>
+                    <p style="font-size: 0.9em; color: #666;">
+                    - Woods, B., et al. (2012). Cognitive stimulation to improve cognitive functioning in people with dementia. Cochrane Database of Systematic Reviews.<br>
+                    - Clare, L., & Woods, R. T. (2004). Cognitive training and cognitive rehabilitation for people with early-stage Alzheimer's disease. Neuropsychological Rehabilitation.
+                    </p>
+                `
+            },
+            tea: {
+                title: '🧩 Protocolo TEA',
+                content: `
+                    <h3>Transtorno do Espectro Autista</h3>
+                    <p>O TEA é caracterizado por dificuldades na comunicação social e padrões restritos e repetitivos de comportamento.</p>
+                    
+                    <h3>Funções Cognitivas Afetadas:</h3>
+                    <ul>
+                        <li>Flexibilidade cognitiva</li>
+                        <li>Planejamento e organização</li>
+                        <li>Teoria da mente</li>
+                        <li>Atenção compartilhada</li>
+                        <li>Controle inibitório</li>
+                    </ul>
+                    
+                    <h3>Protocolo de Treino Recomendado:</h3>
+                    <ul>
+                        <li><strong>Frequência:</strong> 20-30 minutos/dia, 3-5 dias/semana</li>
+                        <li><strong>Foco:</strong> Funções executivas e flexibilidade cognitiva</li>
+                        <li><strong>Abordagem:</strong> Estruturada, previsível e com reforço positivo</li>
+                        <li><strong>Adaptação:</strong> Respeitar sensibilidades sensoriais</li>
+                    </ul>
+                    
+                    <h3>Jogos Recomendados:</h3>
+                    <p>🃏 Mestre das Cartas, 🗼 Torre Estratégica, 🔢 Padrões Ocultos, 🗂️ Organiza Tudo</p>
+                    
+                    <h3>Evidências Científicas:</h3>
+                    <p style="font-size: 0.9em; color: #666;">
+                    - Kenworthy, L., et al. (2014). Randomized controlled effectiveness trial of executive function intervention for children on the autism spectrum. Journal of Child Psychology and Psychiatry.<br>
+                    - de Vries, M., & Geurts, H. (2015). Influence of autism traits and executive functioning on quality of life in children with an autism spectrum disorder. Journal of Autism and Developmental Disorders.
+                    </p>
+                `
+            },
+            avc: {
+                title: '❤️ Protocolo AVC',
+                content: `
+                    <h3>Reabilitação Cognitiva Pós-AVC</h3>
+                    <p>O AVC pode causar déficits cognitivos variados dependendo da área cerebral afetada.</p>
+                    
+                    <h3>Funções Cognitivas Frequentemente Afetadas:</h3>
+                    <ul>
+                        <li>Atenção e concentração</li>
+                        <li>Memória (curto e longo prazo)</li>
+                        <li>Funções executivas</li>
+                        <li>Linguagem (afasia)</li>
+                        <li>Habilidades visuoespaciais</li>
+                    </ul>
+                    
+                    <h3>Protocolo de Treino Recomendado:</h3>
+                    <ul>
+                        <li><strong>Frequência:</strong> 30-40 minutos/dia, 5-7 dias/semana</li>
+                        <li><strong>Foco:</strong> Funções mais afetadas, com abordagem compensatória</li>
+                        <li><strong>Janela crítica:</strong> Primeiros 6 meses pós-AVC (maior plasticidade)</li>
+                        <li><strong>Abordagem:</strong> Intensiva, repetitiva e orientada a tarefas</li>
+                    </ul>
+                    
+                    <h3>Jogos Recomendados:</h3>
+                    <p>⚡ Foco Laser, 🎴 Pares Perfeitos, 🔍 Caça ao Tesouro, 🗼 Torre Estratégica</p>
+                    
+                    <h3>Evidências Científicas:</h3>
+                    <p style="font-size: 0.9em; color: #666;">
+                    - Cicerone, K. D., et al. (2011). Evidence-based cognitive rehabilitation. Archives of Physical Medicine and Rehabilitation.<br>
+                    - Loetscher, T., & Lincoln, N. B. (2013). Cognitive rehabilitation for attention deficits following stroke. Cochrane Database of Systematic Reviews.
+                    </p>
+                `
+            },
+            performance: {
+                title: '⚡ Performance Cognitiva',
+                content: `
+                    <h3>Otimização da Performance Cognitiva</h3>
+                    <p>Treino cognitivo para indivíduos saudáveis que buscam maximizar suas capacidades mentais para alta performance profissional, acadêmica ou esportiva.</p>
+                    
+                    <h3>Funções-Alvo para Otimização:</h3>
+                    <ul>
+                        <li>Atenção sustentada e foco prolongado</li>
+                        <li>Memória de trabalho expandida</li>
+                        <li>Velocidade de processamento</li>
+                        <li>Flexibilidade cognitiva</li>
+                        <li>Tomada de decisão rápida</li>
+                        <li>Controle executivo</li>
+                    </ul>
+                    
+                    <h3>Protocolo de Treino Recomendado:</h3>
+                    <ul>
+                        <li><strong>Frequência:</strong> 30-45 minutos/dia, 5-6 dias/semana</li>
+                        <li><strong>Foco:</strong> Treino adaptativo em alta intensidade</li>
+                        <li><strong>Abordagem:</strong> Desafio progressivo próximo ao limite de capacidade</li>
+                        <li><strong>Objetivo:</strong> Expandir capacidades além do baseline</li>
+                        <li><strong>Duração:</strong> Ciclos de 8-12 semanas com reavaliação</li>
+                    </ul>
+                    
+                    <h3>Aplicações:</h3>
+                    <ul>
+                        <li>Executivos e líderes empresariais</li>
+                        <li>Estudantes em preparação para concursos/vestibulares</li>
+                        <li>Atletas de alto rendimento</li>
+                        <li>Profissionais que exigem alta demanda cognitiva</li>
+                        <li>Prevenção de declínio cognitivo em envelhecimento saudável</li>
+                    </ul>
+                    
+                    <h3>Jogos Recomendados:</h3>
+                    <p>⚡ Foco Laser, 🧩 Memória Ativa, 🗼 Torre Estratégica, 🔢 Padrões Ocultos</p>
+                    
+                    <h3>Evidências Científicas:</h3>
+                    <p style="font-size: 0.9em; color: #666;">
+                    - Jaeggi, S. M., et al. (2008). Improving fluid intelligence with training on working memory. PNAS.<br>
+                    - Au, J., et al. (2015). Improving fluid intelligence with training on working memory: a meta-analysis. Psychonomic Bulletin & Review.<br>
+                    - Brehmer, Y., et al. (2012). Working-memory training in younger and older adults: training gains, transfer, and maintenance. Frontiers in Human Neuroscience.
+                    </p>
+                `
+            }
+        };
+        
+        // Mostrar banner LGPD
+        window.onload = function() {
+            const lgpdAccepted = localStorage.getItem('lgpdAccepted');
+            if (!lgpdAccepted) {
+                document.getElementById('lgpdBanner').style.display = 'block';
+            }
+            
+            const savedProf = localStorage.getItem('currentProfessional');
+            const savedPat = localStorage.getItem('currentPatient');
+            
+            if (savedProf) {
+                currentProfessional = JSON.parse(savedProf);
+                showProfessionalDashboard();
+            } else if (savedPat) {
+                currentPatient = JSON.parse(savedPat);
+                showPatientDashboard();
+            }
+        };
+        
+        // LGPD
+        function acceptLGPD() {
+            localStorage.setItem('lgpdAccepted', 'true');
+            document.getElementById('lgpdBanner').style.display = 'none';
+        }
+        
+        function showPrivacyPolicy() {
+            const content = `
+                <h2>Política de Privacidade e Segurança de Dados</h2>
+                <p><strong>PsicoNeuro Rehab - Plataforma de Reabilitação Cognitiva</strong></p>
+                
+                <h3>1. Conformidade com LGPD</h3>
+                <p>Esta plataforma está em conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018).</p>
+                
+                <h3>2. Dados Coletados</h3>
+                <ul>
+                    <li>Dados cadastrais: nome, CPF, data de nascimento, CRP (profissionais)</li>
+                    <li>Dados de saúde: patologia, resultados de jogos cognitivos</li>
+                    <li>Dados de uso: sessões realizadas, pontuações, evolução</li>
+                </ul>
+                
+                <h3>3. Finalidade do Tratamento</h3>
+                <p>Os dados são utilizados exclusivamente para:</p>
+                <ul>
+                    <li>Prestação de serviços de reabilitação cognitiva</li>
+                    <li>Acompanhamento terapêutico</li>
+                    <li>Geração de relatórios de evolução</li>
+                    <li>Melhoria da plataforma</li>
+                </ul>
+                
+                <h3>4. Armazenamento e Segurança</h3>
+                <ul>
+                    <li>Dados armazenados localmente no navegador (localStorage)</li>
+                    <li>Criptografia de dados sensíveis</li>
+                    <li>Acesso restrito apenas ao titular e profissional responsável</li>
+                    <li>Não compartilhamento com terceiros</li>
+                </ul>
+                
+                <h3>5. Direitos do Titular</h3>
+                <p>Você tem direito a:</p>
+                <ul>
+                    <li>Acessar seus dados</li>
+                    <li>Corrigir dados incompletos ou incorretos</li>
+                    <li>Solicitar exclusão de dados</li>
+                    <li>Revogar consentimento</li>
+                    <li>Portabilidade de dados</li>
+                </ul>
+                
+                <h3>6. Sigilo Profissional</h3>
+                <p>Profissionais psicólogos estão sujeitos ao Código de Ética Profissional do Psicólogo (Resolução CFP nº 010/2005), garantindo sigilo absoluto das informações.</p>
+                
+                <h3>7. Contato</h3>
+                <p>Para exercer seus direitos ou esclarecer dúvidas:<br>
+                Email: melpsicologa@gmail.com</p>
+                
+                <h3>8. Consentimento</h3>
+                <p>Ao utilizar esta plataforma, você consente com esta política de privacidade.</p>
+            `;
+            showModal(content);
+        }
+        
+        // Modal
+        function showModal(content) {
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('genericModal').style.display = 'block';
+        }
+        
+        function closeModal() {
+            document.getElementById('genericModal').style.display = 'none';
+        }
+        
+        // Biblioteca Científica
+        function showLibraryContent(topic) {
+            const lib = libraryContent[topic];
+            if (lib) {
+                showModal('<h2>' + lib.title + '</h2>' + lib.content);
+            }
+        }
+        
+        // Navegação entre telas
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+        
+        function selectPortal(portal) {
+            if (portal === 'professional') {
+                showScreen('professionalLoginScreen');
+            } else {
+                showScreen('patientLoginScreen');
+            }
+        }
+        
+        function backToPortalSelection() {
+            showScreen('portalSelectionScreen');
+        }
+        
+        function showPricingScreen() {
+            showScreen('pricingScreen');
+        }
+        
+        // Profissional - Login/Registro
+        function showRegisterProfessional() {
+            showScreen('professionalRegisterScreen');
+        }
+        
+        function showProfessionalLogin() {
+            showScreen('professionalLoginScreen');
+        }
+        
+        function registerProfessional() {
+            const name = document.getElementById('profRegName').value;
+            const crp = document.getElementById('profRegCRP').value;
+            const email = document.getElementById('profRegEmail').value;
+            const password = document.getElementById('profRegPassword').value;
+            
+            if (!name || !crp || !email || !password) {
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+            
+            const professional = { name, crp, email, password, patients: [] };
+            localStorage.setItem('professional_' + crp, JSON.stringify(professional));
+            alert('Cadastro realizado com sucesso!');
+            showProfessionalLogin();
+        }
+        
+        function loginProfessional() {
+            const crp = document.getElementById('profCRP').value;
+            const password = document.getElementById('profPassword').value;
+            
+            const professional = JSON.parse(localStorage.getItem('professional_' + crp));
+            
+            if (!professional || professional.password !== password) {
+                alert('CRP ou senha incorretos!');
+                return;
+            }
+            
+            currentProfessional = professional;
+            localStorage.setItem('currentProfessional', JSON.stringify(professional));
+            showProfessionalDashboard();
+        }
+        
+        function logoutProfessional() {
+            currentProfessional = null;
+            localStorage.removeItem('currentProfessional');
+            backToPortalSelection();
+        }
+        
+        function showProfessionalDashboard() {
+            document.getElementById('professionalWelcome').textContent = 'Bem-vindo(a), ' + currentProfessional.name;
+            document.getElementById('professionalCRP').textContent = 'CRP: ' + currentProfessional.crp;
+            loadPatientsList();
+            showScreen('professionalDashboardScreen');
+        }
+        
+        function showProfessionalSection(section) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('profPatientsSection').style.display = 'none';
+            document.getElementById('profAddPatientSection').style.display = 'none';
+            document.getElementById('profLibrarySection').style.display = 'none';
+            document.getElementById('profReportsSection').style.display = 'none';
+            
+            if (section === 'patients') {
+                document.getElementById('profPatientsSection').style.display = 'block';
+                loadPatientsList();
+            } else if (section === 'addPatient') {
+                document.getElementById('profAddPatientSection').style.display = 'block';
+            } else if (section === 'library') {
+                document.getElementById('profLibrarySection').style.display = 'block';
+            } else if (section === 'reports') {
+                document.getElementById('profReportsSection').style.display = 'block';
+            }
+        }
+        
+        function addPatient() {
+            const name = document.getElementById('newPatientName').value;
+            const cpf = document.getElementById('newPatientCPF').value;
+            const pathology = document.getElementById('newPatientPathology').value;
+            
+            if (!name || !cpf || !pathology) {
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+            
+            const patient = { name, cpf, pathology, addedBy: currentProfessional.crp };
+            currentProfessional.patients.push(patient);
+            
+            localStorage.setItem('professional_' + currentProfessional.crp, JSON.stringify(currentProfessional));
+            localStorage.setItem('currentProfessional', JSON.stringify(currentProfessional));
+            
+            alert('Paciente adicionado com sucesso!');
+            document.getElementById('newPatientName').value = '';
+            document.getElementById('newPatientCPF').value = '';
+            document.getElementById('newPatientPathology').value = '';
+            
+            loadPatientsList();
+        }
+        
+        function loadPatientsList() {
+            const list = document.getElementById('patientsList');
+            
+            if (!currentProfessional.patients || currentProfessional.patients.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #666;">Nenhum paciente cadastrado ainda.</p>';
+                return;
+            }
+            
+            let html = '<div style="display: grid; gap: 15px;">';
+            currentProfessional.patients.forEach((patient, index) => {
+                const pathologyNames = {
+                    tdah: 'TDAH',
+                    dislexia: 'Dislexia',
+                    discalculia: 'Discalculia',
+                    demencia: 'Demências',
+                    tea: 'TEA',
+                    avc: 'AVC',
+                    performance: 'Performance Cognitiva'
+                };
+                html += `
+                    <div style="background: white; padding: 20px; border-radius: 10px; border-left: 5px solid #1e3c72;">
+                        <h4 style="color: #1e3c72; margin-bottom: 10px;">${patient.name}</h4>
+                        <p style="color: #666; margin: 5px 0;"><strong>CPF:</strong> ${patient.cpf}</p>
+                        <p style="color: #666; margin: 5px 0;"><strong>Patologia:</strong> ${pathologyNames[patient.pathology]}</p>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            list.innerHTML = html;
+        }
+        
+        // Paciente - Login/Registro
+        function showRegisterPatient() {
+            showScreen('patientRegisterScreen');
+        }
+        
+        function showPatientLogin() {
+            showScreen('patientLoginScreen');
+        }
+        
+        function registerPatient() {
+            const name = document.getElementById('patRegName').value;
+            const cpf = document.getElementById('patRegCPF').value;
+            const birth = document.getElementById('patRegBirth').value;
+            const pathology = document.getElementById('patRegPathology').value;
+            const password = document.getElementById('patRegPassword').value;
+            
+            if (!name || !cpf || !birth || !pathology || !password) {
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+            
+            const patient = {
+                name, cpf, birth, pathology, password,
+                sessions: [],
+                totalPoints: 0,
+                totalSessions: 0
+            };
+            
+            localStorage.setItem('patient_' + cpf, JSON.stringify(patient));
+            alert('Cadastro realizado com sucesso!');
+            showPatientLogin();
+        }
+        
+        function loginPatient() {
+            const cpf = document.getElementById('patientCPF').value;
+            const password = document.getElementById('patientPassword').value;
+            
+            const patient = JSON.parse(localStorage.getItem('patient_' + cpf));
+            
+            if (!patient || patient.password !== password) {
+                alert('CPF ou senha incorretos!');
+                return;
+            }
+            
+            currentPatient = patient;
+            localStorage.setItem('currentPatient', JSON.stringify(patient));
+            showPatientDashboard();
+        }
+        
+        function logoutPatient() {
+            currentPatient = null;
+            localStorage.removeItem('currentPatient');
+            backToPortalSelection();
+        }
+        
+        function showPatientDashboard() {
+            const pathologyNames = {
+                tdah: 'TDAH',
+                dislexia: 'Dislexia',
+                discalculia: 'Discalculia',
+                demencia: 'Demências',
+                tea: 'TEA (Autismo)',
+                avc: 'AVC',
+                performance: 'Performance Cognitiva'
+            };
+            
+            document.getElementById('patientWelcome').textContent = 'Olá, ' + currentPatient.name + '! 👋';
+            document.getElementById('patientPathology').textContent = 'Protocolo: ' + pathologyNames[currentPatient.pathology];
+            
+            // Atualizar estatísticas
+            document.getElementById('totalSessions').textContent = currentPatient.sessions?.length || 0;
+            document.getElementById('totalPoints').textContent = currentPatient.totalPoints || 0;
+            
+            const avgPrec = currentPatient.sessions?.length > 0 
+                ? Math.round(currentPatient.sessions.reduce((sum, s) => sum + s.precision, 0) / currentPatient.sessions.length)
+                : 0;
+            document.getElementById('avgPrecision').textContent = avgPrec + '%';
+            document.getElementById('bestStreak').textContent = currentPatient.bestStreak || 0;
+            
+            // Carregar jogos recomendados
+            loadRecommendedGames();
+            loadAllGames();
+            
+            showScreen('patientDashboardScreen');
+        }
+        
+        function loadRecommendedGames() {
+            const recommended = pathologyProtocols[currentPatient.pathology];
+            const container = document.getElementById('recommendedGames');
+            
+            let html = '';
+            recommended.forEach(gameId => {
+                const game = games[gameId];
+                html += `
+                    <div class="game-card" onclick="startGame('${gameId}')">
+                        <div class="game-icon">${game.icon}</div>
+                        <h3>${game.name}</h3>
+                        <p>${game.skill}</p>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+        
+        function loadAllGames() {
+            const container = document.getElementById('allGamesGrid');
+            let html = '';
+            
+            Object.keys(games).forEach(gameId => {
+                const game = games[gameId];
+                html += `
+                    <div class="game-card" onclick="startGame('${gameId}')">
+                        <div class="game-icon">${game.icon}</div>
+                        <h3>${game.name}</h3>
+                        <p>${game.skill}</p>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+        
+        // Jogo - Seleção de Nível
+        function startGame(gameId) {
+            const modal = document.getElementById('genericModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            modalContent.innerHTML = `
+                <h2 style="color: #1e3c72; margin-bottom: 20px;">Escolha o Nível</h2>
+                <p style="margin-bottom: 30px; color: #666;">${games[gameId].name}</p>
+                
+                <div style="display: grid; gap: 15px;">
+                    <button onclick="startGameWithLevel('${gameId}', 'facil')" style="padding: 20px; font-size: 1.1em; background: #4caf50; color: white; border: none; border-radius: 10px; cursor: pointer;">
+                        😊 Fácil - Ideal para iniciantes
+                    </button>
+                    <button onclick="startGameWithLevel('${gameId}', 'medio')" style="padding: 20px; font-size: 1.1em; background: #ff9800; color: white; border: none; border-radius: 10px; cursor: pointer;">
+                        🎯 Médio - Desafio equilibrado
+                    </button>
+                    <button onclick="startGameWithLevel('${gameId}', 'dificil')" style="padding: 20px; font-size: 1.1em; background: #f44336; color: white; border: none; border-radius: 10px; cursor: pointer;">
+                        🔥 Difícil - Para experts
+                    </button>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+        }
+        
+        function startGameWithLevel(gameId, level) {
+            closeModal();
+            
+            gameState = {
+                gameId: gameId,
+                gameName: games[gameId].name,
+                gameSkill: games[gameId].skill,
+                level: level,
+                hits: 0,
+                errors: 0,
+                score: 0,
+                timeLeft: level === 'facil' ? 90 : (level === 'medio' ? 60 : 45),
+                startTime: Date.now(),
+                reactionTimes: []
+            };
+            
+            document.getElementById('timer').textContent = gameState.timeLeft;
+            document.getElementById('hits').textContent = gameState.hits;
+            document.getElementById('errors').textContent = gameState.errors;
+            document.getElementById('score').textContent = gameState.score;
+            
+            showScreen('gameScreen');
+            initializeGame(gameId, level);
+            startTimer();
+        }
+        
+        function initializeGame(gameId, level) {
+            const gameArea = document.getElementById('gameArea');
+            
+            // Jogos com mecânicas únicas
+            if (gameId === 'memory1') {
+                initMemoryGame(level);
+            } else if (gameId === 'attention4') {
+                initStroopGame(level);
+            } else if (gameId === 'attention1') {
+                initFocusGame(level);
+            } else if (gameId === 'memory2') {
+                initCodeGame(level);
+            } else if (gameId === 'language1') {
+                initWordStormGame(level);
+            } else if (gameId === 'language2') {
+                initNamingGame(level);
+            } else if (gameId === 'executive1') {
+                initTowerGame(level);
+            } else if (gameId === 'executive4') {
+                initPatternGame(level);
+            } else {
+                initStandardGame(gameId, level);
+            }
+        }
+        
+        function initMemoryGame(level) {
+            const configs = {
+                facil: { pairs: 6, symbols: ['🎯', '⭐', '🎨', '🎭', '🎪', '🎬'] },
+                medio: { pairs: 10, symbols: ['🎯', '⭐', '🎨', '🎭', '🎪', '🎬', '🎮', '🎲', '🎰', '🎳'] },
+                dificil: { pairs: 12, symbols: ['🎯', '⭐', '🎨', '🎭', '🎪', '🎬', '🎮', '🎲', '🎰', '🎳', '🎺', '🎸'] }
+            };
+            
+            const config = configs[level];
+            const cards = [...config.symbols, ...config.symbols].sort(() => Math.random() - 0.5);
+            
+            gameState.memoryCards = cards;
+            gameState.flippedCards = [];
+            gameState.matchedPairs = 0;
+            gameState.attempts = 0;
+            
+            const cols = level === 'facil' ? 4 : (level === 'medio' ? 5 : 6);
+            
+            const gameArea = document.getElementById('gameArea');
+            gameArea.innerHTML = `
+                <div style="text-align: center;">
+                    <h2 style="color: #1e3c72; margin-bottom: 20px;">🎴 Pares Perfeitos</h2>
+                    <p style="margin-bottom: 30px;">Nível: <strong>${level.toUpperCase()}</strong> | Encontre todos os ${config.pairs} pares!</p>
+                    <div style="display: grid; grid-template-columns: repeat(${cols}, 1fr); gap: 10px; max-width: 600px; margin: 0 auto;">
+                        ${cards.map((symbol, i) => `
+                            <div id="card-${i}" onclick="flipCard(${i})" style="
+                                width: 80px;
+                                height: 80px;
+                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                border-radius: 10px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 2.5em;
+                                cursor: pointer;
+                                transition: all 0.3s;
+                                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                            ">
+                                <span style="display: none;">${symbol}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="margin-top: 20px; font-size: 1.1em;">
+                        <span style="margin-right: 20px;">Tentativas: <strong id="attempts">0</strong></span>
+                        <span>Pares: <strong id="pairs">0/${config.pairs}</strong></span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function flipCard(index) {
+            if (gameState.flippedCards.length >= 2) return;
+            if (gameState.flippedCards.includes(index)) return;
+            
+            const card = document.getElementById(`card-${index}`);
+            const symbol = card.querySelector('span');
+            
+            card.style.background = 'white';
+            card.style.border = '3px solid #1e3c72';
+            symbol.style.display = 'block';
+            
+            gameState.flippedCards.push(index);
+            
+            if (gameState.flippedCards.length === 2) {
+                gameState.attempts++;
+                document.getElementById('attempts').textContent = gameState.attempts;
+                
+                const [first, second] = gameState.flippedCards;
+                const firstSymbol = gameState.memoryCards[first];
+                const secondSymbol = gameState.memoryCards[second];
+                
+                if (firstSymbol === secondSymbol) {
+                    gameState.matchedPairs++;
+                    gameState.hits++;
+                    gameState.score += (gameState.level === 'dificil' ? 30 : (gameState.level === 'medio' ? 20 : 10));
+                    
+                    document.getElementById('pairs').textContent = `${gameState.matchedPairs}/${gameState.memoryCards.length / 2}`;
+                    document.getElementById('hits').textContent = gameState.hits;
+                    document.getElementById('score').textContent = gameState.score;
+                    
+                    gameState.flippedCards = [];
+                    
+                    if (gameState.matchedPairs === gameState.memoryCards.length / 2) {
+                        setTimeout(() => endGame(), 500);
+                    }
+                } else {
+                    gameState.errors++;
+                    document.getElementById('errors').textContent = gameState.errors;
+                    
+                    setTimeout(() => {
+                        document.getElementById(`card-${first}`).style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                        document.getElementById(`card-${first}`).style.border = 'none';
+                        document.getElementById(`card-${first}`).querySelector('span').style.display = 'none';
+                        
+                        document.getElementById(`card-${second}`).style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                        document.getElementById(`card-${second}`).style.border = 'none';
+                        document.getElementById(`card-${second}`).querySelector('span').style.display = 'none';
+                        
+                        gameState.flippedCards = [];
+                    }, 1000);
+                }
+            }
+        }
+        
+        function initStandardGame(gameId, level) {
+            const configs = {
+                facil: { speed: 2000, targets: 0.7, gridSize: 3 },
+                medio: { speed: 1200, targets: 0.5, gridSize: 4 },
+                dificil: { speed: 800, targets: 0.3, gridSize: 5 }
+            };
+            
+            const config = configs[level];
+            gameState.gameInterval = null;
+            gameState.currentTargets = [];
+            
+            const gameArea = document.getElementById('gameArea');
+            gameArea.innerHTML = `
+                <div style="text-align: center;">
+                    <h2 style="color: #1e3c72; margin-bottom: 20px;">${games[gameId].name}</h2>
+                    <p style="font-size: 1.1em; margin-bottom: 10px;">${games[gameId].skill}</p>
+                    <p style="margin-bottom: 30px; color: #666;">Nível: <strong>${level.toUpperCase()}</strong></p>
+                    <div id="gameGrid" style="display: grid; grid-template-columns: repeat(${config.gridSize}, 1fr); gap: 15px; max-width: ${config.gridSize * 120}px; margin: 0 auto;">
+                        ${Array(config.gridSize * config.gridSize).fill(0).map((_, i) => `
+                            <button id="btn-${i}" onclick="gameClick(${i})" style="
+                                padding: 30px;
+                                font-size: 2.5em;
+                                background: white;
+                                border: 3px solid #1e3c72;
+                                border-radius: 15px;
+                                cursor: pointer;
+                                transition: all 0.2s;
+                                min-height: 100px;
+                            ">
+                                
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div style="margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 10px; display: inline-block;">
+                        <p style="margin-bottom: 5px;">🎯 Clique apenas nos alvos corretos!</p>
+                        <p style="font-size: 0.9em; color: #666;">Evite os distratores</p>
+                    </div>
+                </div>
+            `;
+            
+            updateTargets(config);
+            gameState.gameInterval = setInterval(() => updateTargets(config), config.speed);
+        }
+        
+        function updateTargets(config) {
+            const buttons = document.querySelectorAll('#gameGrid button');
+            const symbols = ['🎯', '❌', '⭐', '🔶', '💎', '🔴'];
+            
+            gameState.currentTargets = [];
+            
+            buttons.forEach((btn, i) => {
+                const isTarget = Math.random() < config.targets;
+                const symbol = isTarget ? '🎯' : symbols[Math.floor(Math.random() * (symbols.length - 1)) + 1];
+                
+                btn.textContent = symbol;
+                btn.style.background = 'white';
+                
+                if (isTarget) {
+                    gameState.currentTargets.push(i);
+                }
+            });
+        }
+        
+        function gameClick(index) {
+            const btn = document.getElementById(`btn-${index}`);
+            const clickTime = Date.now();
+            const reactionTime = clickTime - gameState.startTime;
+            
+            gameState.reactionTimes.push(reactionTime);
+            
+            if (gameState.currentTargets.includes(index)) {
+                gameState.hits++;
+                gameState.score += (gameState.level === 'dificil' ? 15 : (gameState.level === 'medio' ? 10 : 5));
+                
+                btn.style.background = '#4caf50';
+                btn.style.transform = 'scale(1.1)';
+                
+                setTimeout(() => {
+                    btn.style.transform = 'scale(1)';
+                }, 200);
+                
+                document.getElementById('hits').textContent = gameState.hits;
+                document.getElementById('score').textContent = gameState.score;
+            } else {
+                gameState.errors++;
+                gameState.score = Math.max(0, gameState.score - 5);
+                
+                btn.style.background = '#f44336';
+                btn.style.transform = 'scale(0.9)';
+                
+                setTimeout(() => {
+                    btn.style.transform = 'scale(1)';
+                }, 200);
+                
+                document.getElementById('errors').textContent = gameState.errors;
+                document.getElementById('score').textContent = gameState.score;
+            }
+        }
+        
+        function startTimer() {
+            gameTimer = setInterval(() => {
+                gameState.timeLeft--;
+                document.getElementById('timer').textContent = gameState.timeLeft;
+                
+                if (gameState.timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+        
+        function quitGame() {
+            if (confirm('Deseja realmente sair do jogo? O progresso será perdido.')) {
+                if (gameTimer) clearInterval(gameTimer);
+                if (gameState.gameInterval) clearInterval(gameState.gameInterval);
+                backToPatientDashboard();
+            }
+        }
+        
+        function endGame() {
+            if (gameTimer) clearInterval(gameTimer);
+            if (gameState.gameInterval) clearInterval(gameState.gameInterval);
+            
+            const precision = Math.round((gameState.hits / (gameState.hits + gameState.errors)) * 100) || 0;
+            const avgReactionTime = gameState.reactionTimes.length > 0 
+                ? Math.round(gameState.reactionTimes.reduce((a, b) => a + b, 0) / gameState.reactionTimes.length)
+                : 0;
+            
+            let levelBonus = 1;
+            if (gameState.level === 'medio') levelBonus = 1.5;
+            if (gameState.level === 'dificil') levelBonus = 2;
+            
+            gameState.score = Math.round(gameState.score * levelBonus);
+            
+            if (precision >= 90) gameState.score += 100;
+            else if (precision >= 80) gameState.score += 50;
+            
+            const session = {
+                gameId: gameState.gameId,
+                gameName: gameState.gameName,
+                gameSkill: gameState.gameSkill,
+                level: gameState.level,
+                hits: gameState.hits,
+                errors: gameState.errors,
+                precision: precision,
+                score: gameState.score,
+                reactionTime: avgReactionTime,
+                date: new Date().toISOString()
+            };
+            
+            if (!currentPatient.sessions) currentPatient.sessions = [];
+            currentPatient.sessions.push(session);
+            currentPatient.totalPoints = (currentPatient.totalPoints || 0) + gameState.score;
+            
+            localStorage.setItem('patient_' + currentPatient.cpf, JSON.stringify(currentPatient));
+            localStorage.setItem('currentPatient', JSON.stringify(currentPatient));
+            
+            showResults(session);
+        }
+        
+        function showResults(session) {
+            document.getElementById('resultGame').textContent = session.gameName;
+            document.getElementById('resultSkill').textContent = session.gameSkill + ' (Nível: ' + session.level.toUpperCase() + ')';
+            document.getElementById('resultHits').textContent = session.hits;
+            document.getElementById('resultErrors').textContent = session.errors;
+            document.getElementById('resultPrecision').textContent = session.precision;
+            document.getElementById('resultScore').textContent = session.score;
+            
+            // Mensagem de evolução
+            const isFirstSession = currentPatient.sessions.length === 1;
+            let evolutionMsg = '';
+            
+            if (isFirstSession) {
+                evolutionMsg = `
+                    <h3>🎯 Primeira Sessão Registrada!</h3>
+                    <p>Esta é sua linha de base (baseline). Continue treinando para ver sua evolução cerebral!</p>
+                `;
+            } else {
+                const previousSessions = currentPatient.sessions.filter(s => s.gameId === session.gameId);
+                if (previousSessions.length > 1) {
+                    const baseline = previousSessions[0];
+                    const improvement = ((session.precision - baseline.precision) / baseline.precision * 100).toFixed(0);
+                    const scoreImprovement = ((session.score - baseline.score) / baseline.score * 100).toFixed(0);
+                    
+                    evolutionMsg = `
+                        <h3>🧠 Evolução Cerebral Detectada!</h3>
+                        <p>Comparando com sua primeira sessão:</p>
+                        <p style="font-size: 1.2em; margin: 10px 0;">
+                            ${improvement > 0 ? `✅ Sua precisão melhorou ${improvement}%!` : '⚠️ Continue treinando para melhorar!'}
+                        </p>
+                        <p style="font-size: 1.2em;">
+                            ${scoreImprovement > 0 ? `⚡ Sua pontuação cresceu ${scoreImprovement}%!` : ''}
+                        </p>
+                    `;
+                }
+            }
+            
+            document.getElementById('evolutionMessage').innerHTML = evolutionMsg;
+            
+            // Barras de progresso
+            setTimeout(() => {
+                document.getElementById('precisionProgress').style.width = session.precision + '%';
+                document.getElementById('precisionProgress').textContent = session.precision + '%';
+                
+                const speedScore = Math.min(100, Math.round((session.hits / 60) * 100));
+                document.getElementById('speedProgress').style.width = speedScore + '%';
+                document.getElementById('speedProgress').textContent = speedScore + '%';
+            }, 500);
+            
+            showScreen('resultScreen');
+        }
+        
+        function backToPatientDashboard() {
+            showPatientDashboard();
+        }
+        
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('genericModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+// IMPLEMENTAÇÃO DOS 7 NOVOS JOGOS COM MECÂNICAS ÚNICAS
+// Para integrar no index.html
+
+// ============================================
+// JOGO 2: CORES EM CONFLITO (Stroop Test)
+// ============================================
+function initStroopGame(level) {
+    const colors = ['vermelho', 'azul', 'verde', 'amarelo', 'roxo', 'laranja'];
+    const colorCodes = {
+        'vermelho': '#f44336',
+        'azul': '#2196f3',
+        'verde': '#4caf50',
+        'amarelo': '#ffeb3b',
+        'roxo': '#9c27b0',
+        'laranja': '#ff9800'
+    };
+    
+    const configs = {
+        facil: { time: 2000, trials: 15 },
+        medio: { time: 1500, trials: 20 },
+        dificil: { time: 1000, trials: 30 }
+    };
+    
+    const config = configs[level];
+    gameState.stroopTrials = 0;
+    gameState.stroopMaxTrials = config.trials;
+    gameState.stroopTime = config.time;
+    
+    const gameArea = document.getElementById('gameArea');
+    gameArea.innerHTML = `
+        <div style="text-align: center; padding: 40px;">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">🌈 Cores em Conflito</h2>
+            <p style="margin-bottom: 30px;">Nível: <strong>${level.toUpperCase()}</strong> | Clique na COR da palavra, não no que está escrito!</p>
+            
+            <div id="stroopWord" style="font-size: 4em; font-weight: bold; margin: 50px 0; min-height: 100px;"></div>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 500px; margin: 0 auto;">
+                ${colors.map(color => `
+                    <button onclick="checkStroopAnswer('${color}')" style="
+                        padding: 20px;
+                        font-size: 1.2em;
+                        background: ${colorCodes[color]};
+                        color: white;
+                        border: none;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        font-weight: bold;
+                        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+                        transition: transform 0.1s;
+                    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        ${color.toUpperCase()}
+                    </button>
+                `).join('')}
+            </div>
+            
+            <div style="margin-top: 30px; font-size: 1.2em;">
+                Tentativa: <strong id="stroopTrial">0</strong> / ${config.trials}
+            </div>
+        </div>
+    `;
+    
+    nextStroopTrial(colors, colorCodes);
+}
+
+function nextStroopTrial(colors, colorCodes) {
+    if (gameState.stroopTrials >= gameState.stroopMaxTrials) {
+        endGame();
+        return;
+    }
+    
+    const wordText = colors[Math.floor(Math.random() * colors.length)];
+    const wordColor = colors[Math.floor(Math.random() * colors.length)];
+    
+    gameState.currentStroopAnswer = wordColor;
+    gameState.stroopStartTime = Date.now();
+    
+    const wordElement = document.getElementById('stroopWord');
+    wordElement.textContent = wordText.toUpperCase();
+    wordElement.style.color = colorCodes[wordColor];
+}
+
+function checkStroopAnswer(answer) {
+    const reactionTime = Date.now() - gameState.stroopStartTime;
+    gameState.reactionTimes.push(reactionTime);
+    
+    if (answer === gameState.currentStroopAnswer) {
+        gameState.hits++;
+        gameState.score += (gameState.level === 'dificil' ? 20 : (gameState.level === 'medio' ? 15 : 10));
+        document.getElementById('stroopWord').textContent = '✅';
+    } else {
+        gameState.errors++;
+        document.getElementById('stroopWord').textContent = '❌';
+    }
+    
+    gameState.stroopTrials++;
+    document.getElementById('stroopTrial').textContent = gameState.stroopTrials;
+    document.getElementById('hits').textContent = gameState.hits;
+    document.getElementById('errors').textContent = gameState.errors;
+    document.getElementById('score').textContent = gameState.score;
+    
+    setTimeout(() => {
+        const colors = ['vermelho', 'azul', 'verde', 'amarelo', 'roxo', 'laranja'];
+        const colorCodes = {
+            'vermelho': '#f44336',
+            'azul': '#2196f3',
+            'verde': '#4caf50',
+            'amarelo': '#ffeb3b',
+            'roxo': '#9c27b0',
+            'laranja': '#ff9800'
+        };
+        nextStroopTrial(colors, colorCodes);
+    }, 500);
+}
+
+// ============================================
+// JOGO 3: FOCO LASER (Atenção Sustentada)
+// ============================================
+function initFocusGame(level) {
+    const configs = {
+        facil: { interval: 1500, targets: 20 },
+        medio: { interval: 1000, targets: 30 },
+        dificil: { interval: 700, targets: 40 }
+    };
+    
+    const config = configs[level];
+    gameState.focusTargets = 0;
+    gameState.focusMaxTargets = config.targets;
+    gameState.focusInterval = config.interval;
+    
+    const gameArea = document.getElementById('gameArea');
+    gameArea.innerHTML = `
+        <div style="text-align: center; padding: 20px;">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">⚡ Foco Laser</h2>
+            <p style="margin-bottom: 30px;">Nível: <strong>${level.toUpperCase()}</strong> | Clique nos alvos 🎯 rapidamente!</p>
+            
+            <div id="focusArea" style="
+                position: relative;
+                width: 600px;
+                height: 400px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 15px;
+                margin: 0 auto;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            "></div>
+            
+            <div style="margin-top: 20px; font-size: 1.2em;">
+                Alvos: <strong id="focusTargets">0</strong> / ${config.targets}
+            </div>
+        </div>
+    `;
+    
+    spawnFocusTarget();
+}
+
+function spawnFocusTarget() {
+    if (gameState.focusTargets >= gameState.focusMaxTargets) {
+        endGame();
+        return;
+    }
+    
+    const focusArea = document.getElementById('focusArea');
+    const target = document.createElement('div');
+    
+    const x = Math.random() * 540; // 600 - 60 (target size)
+    const y = Math.random() * 340; // 400 - 60 (target size)
+    
+    target.innerHTML = '🎯';
+    target.style.cssText = `
+        position: absolute;
+        left: ${x}px;
+        top: ${y}px;
+        font-size: 3em;
+        cursor: pointer;
+        animation: pulse 0.5s infinite;
+    `;
+    
+    gameState.focusStartTime = Date.now();
+    
+    target.onclick = () => {
+        const reactionTime = Date.now() - gameState.focusStartTime;
+        gameState.reactionTimes.push(reactionTime);
+        
+        gameState.hits++;
+        gameState.score += (gameState.level === 'dificil' ? 15 : (gameState.level === 'medio' ? 10 : 5));
+        gameState.focusTargets++;
+        
+        document.getElementById('hits').textContent = gameState.hits;
+        document.getElementById('score').textContent = gameState.score;
+        document.getElementById('focusTargets').textContent = gameState.focusTargets;
+        
+        target.remove();
+        
+        setTimeout(() => spawnFocusTarget(), gameState.focusInterval);
+    };
+    
+    focusArea.appendChild(target);
+    
+    // Auto-remove after timeout (miss)
+    setTimeout(() => {
+        if (target.parentElement) {
+            gameState.errors++;
+            document.getElementById('errors').textContent = gameState.errors;
+            target.remove();
+            spawnFocusTarget();
+        }
+    }, gameState.focusInterval * 2);
+}
+
+// ============================================
+// JOGO 4: CÓDIGO SECRETO (Memória de Sequência)
+// ============================================
+function initCodeGame(level) {
+    const configs = {
+        facil: { length: 4, rounds: 5 },
+        medio: { length: 6, rounds: 7 },
+        dificil: { length: 8, rounds: 10 }
+    };
+    
+    const config = configs[level];
+    gameState.codeRound = 0;
+    gameState.codeMaxRounds = config.rounds;
+    gameState.codeLength = config.length;
+    gameState.codeSequence = [];
+    gameState.codeUserInput = [];
+    
+    const gameArea = document.getElementById('gameArea');
+    gameArea.innerHTML = `
+        <div style="text-align: center; padding: 40px;">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">🔐 Código Secreto</h2>
+            <p style="margin-bottom: 30px;">Nível: <strong>${level.toUpperCase()}</strong> | Memorize e repita a sequência!</p>
+            
+            <div id="codeDisplay" style="
+                font-size: 3em;
+                font-weight: bold;
+                min-height: 100px;
+                margin: 30px 0;
+                color: #1e3c72;
+            "></div>
+            
+            <div id="codeButtons" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 400px; margin: 0 auto;">
+                ${[0,1,2,3,4,5,6,7,8,9].map(num => `
+                    <button onclick="inputCodeDigit(${num})" style="
+                        padding: 30px;
+                        font-size: 2em;
+                        font-weight: bold;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: white;
+                        border: none;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        transition: transform 0.1s;
+                    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        ${num}
+                    </button>
+                `).join('')}
+            </div>
+            
+            <div style="margin-top: 30px; font-size: 1.2em;">
+                Rodada: <strong id="codeRound">0</strong> / ${config.rounds}
+            </div>
+        </div>
+    `;
+    
+    startCodeRound();
+}
+
+function startCodeRound() {
+    if (gameState.codeRound >= gameState.codeMaxRounds) {
+        endGame();
+        return;
+    }
+    
+    gameState.codeSequence = [];
+    gameState.codeUserInput = [];
+    
+    for (let i = 0; i < gameState.codeLength; i++) {
+        gameState.codeSequence.push(Math.floor(Math.random() * 10));
+    }
+    
+    const display = document.getElementById('codeDisplay');
+    display.textContent = 'Memorize...';
+    
+    setTimeout(() => {
+        display.textContent = gameState.codeSequence.join(' ');
+        
+        setTimeout(() => {
+            display.textContent = 'Digite a sequência!';
+            gameState.codeStartTime = Date.now();
+        }, 2000);
+    }, 1000);
+}
+
+function inputCodeDigit(digit) {
+    if (gameState.codeUserInput.length >= gameState.codeLength) return;
+    
+    gameState.codeUserInput.push(digit);
+    
+    const display = document.getElementById('codeDisplay');
+    display.textContent = gameState.codeUserInput.join(' ');
+    
+    if (gameState.codeUserInput.length === gameState.codeLength) {
+        checkCodeSequence();
+    }
+}
+
+function checkCodeSequence() {
+    const correct = gameState.codeSequence.every((num, i) => num === gameState.codeUserInput[i]);
+    
+    const reactionTime = Date.now() - gameState.codeStartTime;
+    gameState.reactionTimes.push(reactionTime);
+    
+    const display = document.getElementById('codeDisplay');
+    
+    if (correct) {
+        gameState.hits++;
+        gameState.score += (gameState.level === 'dificil' ? 30 : (gameState.level === 'medio' ? 20 : 10));
+        display.textContent = '✅ CORRETO!';
+    } else {
+        gameState.errors++;
+        display.textContent = '❌ ERRADO!';
+    }
+    
+    gameState.codeRound++;
+    document.getElementById('codeRound').textContent = gameState.codeRound;
+    document.getElementById('hits').textContent = gameState.hits;
+    document.getElementById('errors').textContent = gameState.errors;
+    document.getElementById('score').textContent = gameState.score;
+    
+    setTimeout(() => startCodeRound(), 2000);
+}
+
+// ============================================
+// JOGO 5: TEMPESTADE DE PALAVRAS (Fluência Verbal)
+// ============================================
+function initWordStormGame(level) {
+    const categories = {
+        facil: ['Animais', 'Frutas', 'Cores'],
+        medio: ['Profissões', 'Países', 'Objetos da Casa'],
+        dificil: ['Verbos', 'Adjetivos', 'Instrumentos Musicais']
+    };
+    
+    const timeLimit = {
+        facil: 60,
+        medio: 45,
+        dificil: 30
+    };
+    
+    const category = categories[level][Math.floor(Math.random() * categories[level].length)];
+    gameState.wordStormCategory = category;
+    gameState.wordStormWords = [];
+    gameState.wordStormTime = timeLimit[level];
+    
+    const gameArea = document.getElementById('gameArea');
+    gameArea.innerHTML = `
+        <div style="text-align: center; padding: 40px;">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">🌪️ Tempestade de Palavras</h2>
+            <p style="margin-bottom: 30px;">Nível: <strong>${level.toUpperCase()}</strong></p>
+            
+            <div style="background: #f5f5f5; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="color: #1e3c72; margin-bottom: 15px;">Categoria:</h3>
+                <div style="font-size: 2em; font-weight: bold; color: #667eea;">${category}</div>
+            </div>
+            
+            <p style="margin-bottom: 20px; font-size: 1.1em;">Digite o máximo de palavras que conseguir!</p>
+            
+            <input type="text" id="wordInput" placeholder="Digite uma palavra e pressione Enter" style="
+                width: 400px;
+                padding: 15px;
+                font-size: 1.2em;
+                border: 2px solid #667eea;
+                border-radius: 10px;
+                margin-bottom: 20px;
+            " onkeypress="if(event.key==='Enter') submitWord()">
+            
+            <div id="wordsList" style="
+                min-height: 150px;
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                margin: 20px auto;
+                max-width: 600px;
+                text-align: left;
+            ">
+                <strong>Palavras digitadas:</strong>
+                <div id="wordsDisplay" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px;"></div>
+            </div>
+            
+            <div style="font-size: 1.2em; margin-top: 20px;">
+                Total: <strong id="wordCount">0</strong> palavras
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('wordInput').focus();
+}
+
+function submitWord() {
+    const input = document.getElementById('wordInput');
+    const word = input.value.trim().toLowerCase();
+    
+    if (word && !gameState.wordStormWords.includes(word)) {
+        gameState.wordStormWords.push(word);
+        gameState.hits++;
+        gameState.score += (gameState.level === 'dificil' ? 15 : (gameState.level === 'medio' ? 10 : 5));
+        
+        const wordsDisplay = document.getElementById('wordsDisplay');
+        const wordBadge = document.createElement('span');
+        wordBadge.textContent = word;
+        wordBadge.style.cssText = `
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        `;
+        wordsDisplay.appendChild(wordBadge);
+        
+        document.getElementById('wordCount').textContent = gameState.wordStormWords.length;
+        document.getElementById('hits').textContent = gameState.hits;
+        document.getElementById('score').textContent = gameState.score;
+    }
+    
+    input.value = '';
+    input.focus();
+}
+
+// ============================================
+// JOGO 6: NOME CERTO (Nomeação Rápida)
+// ============================================
+function initNamingGame(level) {
+    const objects = {
+        facil: [
+            {emoji: '🐕', name: 'cachorro'},
+            {emoji: '🐱', name: 'gato'},
+            {emoji: '🌳', name: 'árvore'},
+            {emoji: '🏠', name: 'casa'},
+            {emoji: '🚗', name: 'carro'}
+        ],
+        medio: [
+            {emoji: '🦋', name: 'borboleta'},
+            {emoji: '🎸', name: 'violão'},
+            {emoji: '🏔️', name: 'montanha'},
+            {emoji: '🌊', name: 'onda'},
+            {emoji: '🎨', name: 'paleta'}
+        ],
+        dificil: [
+            {emoji: '🔬', name: 'microscópio'},
+            {emoji: '🎺', name: 'trompete'},
+            {emoji: '⚗️', name: 'béquer'},
+            {emoji: '🗿', name: 'estátua'},
+            {emoji: '🎭', name: 'máscara'}
+        ]
+    };
+    
+    gameState.namingObjects = objects[level];
+    gameState.namingCurrent = 0;
+    
+    const gameArea = document.getElementById('gameArea');
+    gameArea.innerHTML = `
+        <div style="text-align: center; padding: 40px;">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">🎯 Nome Certo</h2>
+            <p style="margin-bottom: 30px;">Nível: <strong>${level.toUpperCase()}</strong> | Digite o nome do objeto!</p>
+            
+            <div id="namingObject" style="font-size: 8em; margin: 40px 0;"></div>
+            
+            <input type="text" id="namingInput" placeholder="Digite o nome" style="
+                width: 400px;
+                padding: 15px;
+                font-size: 1.5em;
+                border: 2px solid #667eea;
+                border-radius: 10px;
+                text-align: center;
+            " onkeypress="if(event.key==='Enter') checkNaming()">
+            
+            <div style="margin-top: 30px; font-size: 1.2em;">
+                Objeto: <strong id="namingProgress">0</strong> / ${objects[level].length}
+            </div>
+        </div>
+    `;
+    
+    showNextNamingObject();
+}
+
+function showNextNamingObject() {
+    if (gameState.namingCurrent >= gameState.namingObjects.length) {
+        endGame();
+        return;
+    }
+    
+    const obj = gameState.namingObjects[gameState.namingCurrent];
+    document.getElementById('namingObject').textContent = obj.emoji;
+    document.getElementById('namingInput').value = '';
+    document.getElementById('namingInput').focus();
+    
+    gameState.namingStartTime = Date.now();
+}
+
+function checkNaming() {
+    const input = document.getElementById('namingInput').value.trim().toLowerCase();
+    const obj = gameState.namingObjects[gameState.namingCurrent];
+    
+    const reactionTime = Date.now() - gameState.namingStartTime;
+    gameState.reactionTimes.push(reactionTime);
+    
+    if (input === obj.name) {
+        gameState.hits++;
+        gameState.score += (gameState.level === 'dificil' ? 25 : (gameState.level === 'medio' ? 15 : 10));
+        document.getElementById('namingObject').textContent = '✅';
+    } else {
+        gameState.errors++;
+        document.getElementById('namingObject').textContent = '❌';
+    }
+    
+    gameState.namingCurrent++;
+    document.getElementById('namingProgress').textContent = gameState.namingCurrent;
+    document.getElementById('hits').textContent = gameState.hits;
+    document.getElementById('errors').textContent = gameState.errors;
+    document.getElementById('score').textContent = gameState.score;
+    
+    setTimeout(() => showNextNamingObject(), 1000);
+}
+
+// ============================================
+// JOGO 7: TORRE ESTRATÉGICA (Torre de Hanói)
+// ============================================
+function initTowerGame(level) {
+    const disks = {
+        facil: 3,
+        medio: 4,
+        dificil: 5
+    };
+    
+    gameState.towerDisks = disks[level];
+    gameState.towers = [[], [], []];
+    
+    for (let i = disks[level]; i >= 1; i--) {
+        gameState.towers[0].push(i);
+    }
+    
+    gameState.towerMoves = 0;
+    gameState.towerSelected = null;
+    
+    const gameArea = document.getElementById('gameArea');
+    gameArea.innerHTML = `
+        <div style="text-align: center; padding: 40px;">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">🗼 Torre Estratégica</h2>
+            <p style="margin-bottom: 30px;">Nível: <strong>${level.toUpperCase()}</strong> | Mova todos os discos para a torre direita!</p>
+            
+            <div id="towerGame" style="display: flex; justify-content: space-around; margin: 40px auto; max-width: 600px;">
+                ${[0,1,2].map(i => `
+                    <div onclick="selectTower(${i})" style="
+                        width: 180px;
+                        min-height: 250px;
+                        background: #f5f5f5;
+                        border-radius: 10px;
+                        padding: 10px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column-reverse;
+                        align-items: center;
+                        border: 3px solid transparent;
+                    " id="tower${i}">
+                        <div style="width: 10px; height: 200px; background: #1e3c72; border-radius: 5px;"></div>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div style="font-size: 1.2em; margin-top: 20px;">
+                Movimentos: <strong id="towerMoves">0</strong>
+            </div>
+        </div>
+    `;
+    
+    renderTowers();
+}
+
+function renderTowers() {
+    for (let i = 0; i < 3; i++) {
+        const tower = document.getElementById(`tower${i}`);
+        const base = tower.querySelector('div');
+        tower.innerHTML = '';
+        tower.appendChild(base);
+        
+        gameState.towers[i].forEach(disk => {
+            const diskEl = document.createElement('div');
+            diskEl.style.cssText = `
+                width: ${disk * 30}px;
+                height: 30px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 5px;
+                margin: 2px 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: bold;
+            `;
+            diskEl.textContent = disk;
+            tower.insertBefore(diskEl, base);
+        });
+    }
+}
+
+function selectTower(towerIndex) {
+    if (gameState.towerSelected === null) {
+        if (gameState.towers[towerIndex].length > 0) {
+            gameState.towerSelected = towerIndex;
+            document.getElementById(`tower${towerIndex}`).style.border = '3px solid #667eea';
+        }
+    } else {
+        if (towerIndex === gameState.towerSelected) {
+            document.getElementById(`tower${gameState.towerSelected}`).style.border = '3px solid transparent';
+            gameState.towerSelected = null;
+        } else {
+            const fromTower = gameState.towers[gameState.towerSelected];
+            const toTower = gameState.towers[towerIndex];
+            
+            if (fromTower.length > 0) {
+                const disk = fromTower[fromTower.length - 1];
+                
+                if (toTower.length === 0 || disk < toTower[toTower.length - 1]) {
+                    toTower.push(fromTower.pop());
+                    gameState.towerMoves++;
+                    gameState.score += (gameState.level === 'dificil' ? 10 : (gameState.level === 'medio' ? 7 : 5));
+                    
+                    document.getElementById('towerMoves').textContent = gameState.towerMoves;
+                    document.getElementById('score').textContent = gameState.score;
+                    
+                    renderTowers();
+                    
+                    if (gameState.towers[2].length === gameState.towerDisks) {
+                        gameState.hits = gameState.towerDisks;
+                        document.getElementById('hits').textContent = gameState.hits;
+                        setTimeout(() => endGame(), 1000);
+                    }
+                }
+            }
+            
+            document.getElementById(`tower${gameState.towerSelected}`).style.border = '3px solid transparent';
+            gameState.towerSelected = null;
+        }
+    }
+}
+
+// ============================================
+// JOGO 8: PADRÕES OCULTOS (Sequências Lógicas)
+// ============================================
+function initPatternGame(level) {
+    const configs = {
+        facil: { rounds: 5, length: 4 },
+        medio: { rounds: 7, length: 5 },
+        dificil: { rounds: 10, length: 6 }
+    };
+    
+    const config = configs[level];
+    gameState.patternRound = 0;
+    gameState.patternMaxRounds = config.rounds;
+    gameState.patternLength = config.length;
+    
+    const gameArea = document.getElementById('gameArea');
+    gameArea.innerHTML = `
+        <div style="text-align: center; padding: 40px;">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">🔢 Padrões Ocultos</h2>
+            <p style="margin-bottom: 30px;">Nível: <strong>${level.toUpperCase()}</strong> | Descubra o próximo número!</p>
+            
+            <div id="patternSequence" style="
+                font-size: 2.5em;
+                font-weight: bold;
+                margin: 40px 0;
+                color: #1e3c72;
+            "></div>
+            
+            <p style="margin-bottom: 20px; font-size: 1.2em;">Qual é o próximo número?</p>
+            
+            <input type="number" id="patternInput" placeholder="?" style="
+                width: 200px;
+                padding: 20px;
+                font-size: 2em;
+                text-align: center;
+                border: 2px solid #667eea;
+                border-radius: 10px;
+            " onkeypress="if(event.key==='Enter') checkPattern()">
+            
+            <div style="margin-top: 30px; font-size: 1.2em;">
+                Rodada: <strong id="patternRound">0</strong> / ${config.rounds}
+            </div>
+        </div>
+    `;
+    
+    generatePattern();
+}
+
+function generatePattern() {
+    if (gameState.patternRound >= gameState.patternMaxRounds) {
+        endGame();
+        return;
+    }
+    
+    const patterns = [
+        (n) => n + 2,  // +2
+        (n) => n + 3,  // +3
+        (n) => n * 2,  // x2
+        (n) => n + n/2,  // +50%
+        (n) => n + 5   // +5
+    ];
+    
+    const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+    const start = Math.floor(Math.random() * 10) + 1;
+    
+    gameState.patternSequence = [start];
+    for (let i = 1; i < gameState.patternLength; i++) {
+        gameState.patternSequence.push(Math.round(pattern(gameState.patternSequence[i-1])));
+    }
+    
+    gameState.patternAnswer = Math.round(pattern(gameState.patternSequence[gameState.patternSequence.length - 1]));
+    
+    document.getElementById('patternSequence').textContent = gameState.patternSequence.join(' - ') + ' - ?';
+    document.getElementById('patternInput').value = '';
+    document.getElementById('patternInput').focus();
+    
+    gameState.patternStartTime = Date.now();
+}
+
+function checkPattern() {
+    const input = parseInt(document.getElementById('patternInput').value);
+    
+    const reactionTime = Date.now() - gameState.patternStartTime;
+    gameState.reactionTimes.push(reactionTime);
+    
+    const tolerance = Math.abs(gameState.patternAnswer * 0.1); // 10% tolerance
+    
+    if (Math.abs(input - gameState.patternAnswer) <= tolerance) {
+        gameState.hits++;
+        gameState.score += (gameState.level === 'dificil' ? 30 : (gameState.level === 'medio' ? 20 : 10));
+        document.getElementById('patternSequence').textContent = '✅ Correto! Era ' + gameState.patternAnswer;
+    } else {
+        gameState.errors++;
+        document.getElementById('patternSequence').textContent = '❌ Errado! Era ' + gameState.patternAnswer;
+    }
+    
+    gameState.patternRound++;
+    document.getElementById('patternRound').textContent = gameState.patternRound;
+    document.getElementById('hits').textContent = gameState.hits;
+    document.getElementById('errors').textContent = gameState.errors;
+    document.getElementById('score').textContent = gameState.score;
+    
+    setTimeout(() => generatePattern(), 2000);
+}
+    
+    // Landing Page Navigation
+    function enterApp() {
+        document.getElementById('landingPage').classList.add('hidden');
+        document.getElementById('appWrapper').classList.add('active');
+        showLGPDBanner();
+    }
+    
+    function backToLanding() {
+        document.getElementById('landingPage').classList.remove('hidden');
+        document.getElementById('appWrapper').classList.remove('active');
+    }
+    
+    // Stripe Payment Integration (placeholder)
+    function selectPlan(planId) {
+        localStorage.setItem('selectedPlan', planId);
+        alert('Plano selecionado: ' + planId + '\n\nApós o cadastro, você será direcionado para o pagamento seguro via Stripe.');
+        // TODO: Integrar com Stripe Checkout
+        // window.location.href = 'https://checkout.stripe.com/pay/...';
+    }
+    
+    </script>
+
+</div><!-- Fecha app-wrapper -->
+
+</body>
+</html>
