@@ -1816,14 +1816,28 @@
                 initStroopGame(level);
             } else if (gameId === 'attention1') {
                 initFocusGame(level);
+            } else if (gameId === 'attention2') {
+                initTreasureHuntGame(level);
+            } else if (gameId === 'attention3') {
+                initMultitaskGame(level);
             } else if (gameId === 'memory2') {
                 initCodeGame(level);
+            } else if (gameId === 'memory4') {
+                initMagicWordsGame(level);
             } else if (gameId === 'language1') {
                 initWordStormGame(level);
             } else if (gameId === 'language2') {
                 initNamingGame(level);
+            } else if (gameId === 'language3') {
+                initSentenceMasterGame(level);
+            } else if (gameId === 'language4') {
+                initOrganizeGame(level);
             } else if (gameId === 'executive1') {
                 initTowerGame(level);
+            } else if (gameId === 'executive2') {
+                initCardMasterGame(level);
+            } else if (gameId === 'executive3') {
+                initMazeGame(level);
             } else if (gameId === 'executive4') {
                 initPatternGame(level);
             } else {
@@ -2903,6 +2917,707 @@ function checkPattern() {
     document.getElementById('score').textContent = gameState.score;
     
     setTimeout(() => generatePattern(), 2000);
+}
+
+// JOGO 1: Caça ao Tesouro - Atenção Seletiva
+function initTreasureHuntGame(level) {
+    const configs = {
+        facil: { items: 8, time: 3000, gridSize: 4 },
+        medio: { items: 12, time: 2000, gridSize: 5 },
+        dificil: { items: 16, time: 1500, gridSize: 6 }
+    };
+    
+    const config = configs[level];
+    const allItems = ['🍎', '🍊', '🍌', '🍇', '🍓', '🥝', '🥑', '🍅', '🥬', '🥕', '🌶️', '🌽', '🥦', '🥒', '🥯', '🥐'];
+    const distractors = ['🟦', '🟧', '🟨', '🟩', '🟪', '⬜', '⬛', '🔲'];
+    
+    gameState.targetItem = allItems[Math.floor(Math.random() * allItems.length)];
+    gameState.foundItems = 0;
+    gameState.totalTargets = Math.floor(config.items / 2);
+    
+    const gameArea = document.getElementById('gameArea');
+    gameArea.innerHTML = `
+        <div style="text-align: center;">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">🔍 Caça ao Tesouro</h2>
+            <p style="margin-bottom: 10px; font-size: 1.3em;">Encontre todos os: <span style="font-size: 2em;">${gameState.targetItem}</span></p>
+            <p style="margin-bottom: 20px; color: #666;">Nível: <strong>${level.toUpperCase()}</strong> | Encontrados: <strong id="foundCount">0/${gameState.totalTargets}</strong></p>
+            <div id="treasureGrid" style="display: grid; grid-template-columns: repeat(${config.gridSize}, 1fr); gap: 10px; max-width: ${config.gridSize * 90}px; margin: 0 auto;">
+            </div>
+        </div>
+    `;
+    
+    updateTreasureGrid(config);
+    gameState.treasureInterval = setInterval(() => updateTreasureGrid(config), config.time);
+}
+
+function updateTreasureGrid(config) {
+    const grid = document.getElementById('treasureGrid');
+    if (!grid) return;
+    
+    const allItems = ['🍎', '🍊', '🍌', '🍇', '🍓', '🥝', '🥑', '🍅', '🥬', '🥕', '🌶️', '🌽', '🥦', '🥒', '🥯', '🥐'];
+    const distractors = ['🟦', '🟧', '🟨', '🟩', '🟪', '⬜', '⬛', '🔲'];
+    
+    const totalCells = config.gridSize * config.gridSize;
+    const targetCount = Math.min(3, gameState.totalTargets - gameState.foundItems);
+    
+    let cells = [];
+    for (let i = 0; i < targetCount; i++) cells.push(gameState.targetItem);
+    for (let i = targetCount; i < totalCells; i++) {
+        cells.push(Math.random() < 0.5 ? allItems[Math.floor(Math.random() * allItems.length)] : distractors[Math.floor(Math.random() * distractors.length)]);
+    }
+    cells = cells.sort(() => Math.random() - 0.5);
+    
+    grid.innerHTML = cells.map((item, i) => `
+        <button onclick="clickTreasure('${item}', ${i})" style="
+            padding: 20px;
+            font-size: 2.5em;
+            background: white;
+            border: 3px solid #1e3c72;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        ">${item}</button>
+    `).join('');
+}
+
+function clickTreasure(item, index) {
+    if (item === gameState.targetItem) {
+        gameState.foundItems++;
+        gameState.hits++;
+        gameState.score += (gameState.level === 'dificil' ? 30 : (gameState.level === 'medio' ? 20 : 10));
+        
+        document.getElementById('foundCount').textContent = `${gameState.foundItems}/${gameState.totalTargets}`;
+        document.getElementById('hits').textContent = gameState.hits;
+        document.getElementById('score').textContent = gameState.score;
+        
+        if (gameState.foundItems >= gameState.totalTargets) {
+            clearInterval(gameState.treasureInterval);
+            endGame();
+        }
+    } else {
+        gameState.errors++;
+        document.getElementById('errors').textContent = gameState.errors;
+    }
+}
+
+// JOGO 2: Multitarefa Master - Atenção Dividida
+function initMultitaskGame(level) {
+    const configs = {
+        facil: { tasks: 2, speed: 2500 },
+        medio: { tasks: 3, speed: 2000 },
+        dificil: { tasks: 4, speed: 1500 }
+    };
+    
+    const config = configs[level];
+    gameState.tasks = [
+        { name: 'Números Pares', check: (n) => n % 2 === 0, icon: '🔢' },
+        { name: 'Letras Vogais', check: (l) => 'AEIOU'.includes(l), icon: '🅰️' },
+        { name: 'Cores Quentes', check: (c) => ['🔴', '🟠', '🟡'].includes(c), icon: '🌶️' },
+        { name: 'Formas Redondas', check: (f) => ['⚫', '🔵', '🔴'].includes(f), icon: '●' }
+    ];
+    
+    gameState.activeTasks = gameState.tasks.slice(0, config.tasks);
+    gameState.currentStimulus = null;
+    
+    const gameArea = document.getElementById('gameArea');
+    gameArea.innerHTML = `
+        <div style="text-align: center;">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">🎭 Multitarefa Master</h2>
+            <p style="margin-bottom: 20px; color: #666;">Nível: <strong>${level.toUpperCase()}</strong> | Gerencie ${config.tasks} tarefas simultâneas!</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(${config.tasks}, 1fr); gap: 15px; margin-bottom: 30px; max-width: 800px; margin-left: auto; margin-right: auto;">
+                ${gameState.activeTasks.map((task, i) => `
+                    <div style="padding: 15px; background: #f0f0f0; border-radius: 10px; border: 3px solid #1e3c72;">
+                        <div style="font-size: 2em; margin-bottom: 5px;">${task.icon}</div>
+                        <div style="font-size: 0.9em; font-weight: bold;">${task.name}</div>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div id="stimulusArea" style="min-height: 200px; display: flex; align-items: center; justify-content: center; background: white; border: 4px solid #1e3c72; border-radius: 20px; margin-bottom: 20px;">
+                <div style="font-size: 5em;" id="currentStimulus">?</div>
+            </div>
+            
+            <div style="display: flex; gap: 20px; justify-content: center;">
+                <button onclick="answerMultitask(true)" style="padding: 20px 40px; font-size: 1.3em; background: #4caf50; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+                    ✔️ SIM
+                </button>
+                <button onclick="answerMultitask(false)" style="padding: 20px 40px; font-size: 1.3em; background: #f44336; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+                    ❌ NÃO
+                </button>
+            </div>
+        </div>
+    `;
+    
+    generateMultitaskStimulus();
+    gameState.multitaskInterval = setInterval(() => generateMultitaskStimulus(), config.speed);
+}
+
+function generateMultitaskStimulus() {
+    const stimuli = {
+        'Números Pares': ['2', '4', '6', '8', '10', '1', '3', '5', '7', '9'],
+        'Letras Vogais': ['A', 'E', 'I', 'O', 'U', 'B', 'C', 'D', 'F', 'G'],
+        'Cores Quentes': ['🔴', '🟠', '🟡', '🔵', '🟢', '🟪'],
+        'Formas Redondas': ['⚫', '🔵', '🔴', '🔶', '🔷', '🔸']
+    };
+    
+    const task = gameState.activeTasks[Math.floor(Math.random() * gameState.activeTasks.length)];
+    const stimulusArray = stimuli[task.name];
+    const stimulus = stimulusArray[Math.floor(Math.random() * stimulusArray.length)];
+    
+    gameState.currentStimulus = { value: stimulus, task: task, correct: task.check(stimulus) };
+    document.getElementById('currentStimulus').textContent = stimulus;
+}
+
+function answerMultitask(answer) {
+    if (!gameState.currentStimulus) return;
+    
+    if (answer === gameState.currentStimulus.correct) {
+        gameState.hits++;
+        gameState.score += (gameState.level === 'dificil' ? 25 : (gameState.level === 'medio' ? 15 : 10));
+        document.getElementById('hits').textContent = gameState.hits;
+        document.getElementById('score').textContent = gameState.score;
+    } else {
+        gameState.errors++;
+        document.getElementById('errors').textContent = gameState.errors;
+    }
+    
+    generateMultitaskStimulus();
+}
+
+// JOGO 3: Palavras Mágicas - Memória Verbal
+function initMagicWordsGame(level) {
+    const configs = {
+        facil: { words: 5, showTime: 5000 },
+        medio: { words: 8, showTime: 6000 },
+        dificil: { words: 12, showTime: 7000 }
+    };
+    
+    const config = configs[level];
+    const wordBank = ['CASA', 'GATO', 'SOL', 'MAR', 'FLOR', 'LIVRO', 'MESA', 'CADEIRA', 'JANELA', 'PORTA', 'CARRO', 'BOLA', 'ESTRELA', 'NUVEM', 'MONTANHA', 'RIO', 'PONTE', 'JARDIM', 'ESCOLA', 'AMIGO'];
+    
+    gameState.magicWords = [];
+    while (gameState.magicWords.length < config.words) {
+        const word = wordBank[Math.floor(Math.random() * wordBank.length)];
+        if (!gameState.magicWords.includes(word)) {
+            gameState.magicWords.push(word);
+        }
+    }
+    
+    gameState.magicPhase = 'memorize';
+    gameState.magicRecalled = [];
+    
+    const gameArea = document.getElementById('gameArea');
+    gameArea.innerHTML = `
+        <div style="text-align: center;">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">✨ Palavras Mágicas</h2>
+            <p style="margin-bottom: 20px; color: #666;">Nível: <strong>${level.toUpperCase()}</strong> | Memorize ${config.words} palavras!</p>
+            
+            <div id="magicContent" style="min-height: 300px; display: flex; align-items: center; justify-content: center; background: white; border: 4px solid #1e3c72; border-radius: 20px; padding: 30px;">
+                <div style="font-size: 1.5em; line-height: 2;">
+                    ${gameState.magicWords.join(' • ')}
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; font-size: 1.1em; color: #666;">
+                Memorize estas palavras! Você terá ${config.showTime/1000} segundos...
+            </div>
+        </div>
+    `;
+    
+    setTimeout(() => startMagicRecall(config), config.showTime);
+}
+
+function startMagicRecall(config) {
+    const allWords = ['CASA', 'GATO', 'SOL', 'MAR', 'FLOR', 'LIVRO', 'MESA', 'CADEIRA', 'JANELA', 'PORTA', 'CARRO', 'BOLA', 'ESTRELA', 'NUVEM', 'MONTANHA', 'RIO', 'PONTE', 'JARDIM', 'ESCOLA', 'AMIGO', 'CACHORRO', 'PÁSSARO', 'PEIXE', 'TELEFONE', 'COMPUTADOR'];
+    
+    let options = [...gameState.magicWords];
+    while (options.length < config.words * 2) {
+        const word = allWords[Math.floor(Math.random() * allWords.length)];
+        if (!options.includes(word)) {
+            options.push(word);
+        }
+    }
+    options = options.sort(() => Math.random() - 0.5);
+    
+    gameState.magicPhase = 'recall';
+    
+    const gameArea = document.getElementById('gameArea');
+    gameArea.innerHTML = `
+        <div style="text-align: center;">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">✨ Palavras Mágicas</h2>
+            <p style="margin-bottom: 20px; color: #666;">Clique nas palavras que você memorizou!</p>
+            <p style="margin-bottom: 20px; font-size: 1.1em;">Recordadas: <strong id="recallCount">0/${gameState.magicWords.length}</strong></p>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 600px; margin: 0 auto;">
+                ${options.map((word, i) => `
+                    <button id="word-${i}" onclick="selectMagicWord('${word}', ${i})" style="
+                        padding: 20px;
+                        font-size: 1.2em;
+                        background: white;
+                        border: 3px solid #1e3c72;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                        font-weight: bold;
+                    ">${word}</button>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function selectMagicWord(word, index) {
+    const btn = document.getElementById(`word-${index}`);
+    if (!btn) return;
+    
+    if (gameState.magicWords.includes(word)) {
+        if (!gameState.magicRecalled.includes(word)) {
+            gameState.magicRecalled.push(word);
+            gameState.hits++;
+            gameState.score += (gameState.level === 'dificil' ? 30 : (gameState.level === 'medio' ? 20 : 10));
+            
+            btn.style.background = '#4caf50';
+            btn.style.color = 'white';
+            btn.style.borderColor = '#4caf50';
+            btn.disabled = true;
+            
+            document.getElementById('recallCount').textContent = `${gameState.magicRecalled.length}/${gameState.magicWords.length}`;
+            document.getElementById('hits').textContent = gameState.hits;
+            document.getElementById('score').textContent = gameState.score;
+            
+            if (gameState.magicRecalled.length === gameState.magicWords.length) {
+                setTimeout(() => endGame(), 500);
+            }
+        }
+    } else {
+        gameState.errors++;
+        btn.style.background = '#f44336';
+        btn.style.color = 'white';
+        btn.style.borderColor = '#f44336';
+        btn.disabled = true;
+        document.getElementById('errors').textContent = gameState.errors;
+    }
+}
+
+// JOGO 4: Mestre das Frases - Compreensão
+function initSentenceMasterGame(level) {
+    const sentences = {
+        facil: [
+            { text: 'O gato subiu na ___', options: ['árvore', 'nuvem', 'lua', 'estrela'], correct: 0 },
+            { text: 'O sol brilha durante o ___', options: ['dia', 'noite', 'inverno', 'sono'], correct: 0 },
+            { text: 'As aves voam no ___', options: ['céu', 'mar', 'chão', 'buraco'], correct: 0 },
+            { text: 'O peixe nada na ___', options: ['água', 'terra', 'areia', 'grama'], correct: 0 },
+            { text: 'A chuva cai das ___', options: ['nuvens', 'estrelas', 'flores', 'pedras'], correct: 0 }
+        ],
+        medio: [
+            { text: 'A biblioteca é um lugar para ___', options: ['ler', 'nadar', 'voar', 'correr'], correct: 0 },
+            { text: 'O médico trabalha no ___', options: ['hospital', 'oceano', 'deserto', 'espaço'], correct: 0 },
+            { text: 'As plantas precisam de ___ para crescer', options: ['luz', 'escuridão', 'frio', 'barulho'], correct: 0 },
+            { text: 'O relógio serve para medir o ___', options: ['tempo', 'peso', 'tamanho', 'som'], correct: 0 },
+            { text: 'A ponte conecta duas ___', options: ['margens', 'nuvens', 'ideias', 'cores'], correct: 0 }
+        ],
+        dificil: [
+            { text: 'A fotossíntese é o processo pelo qual as plantas produzem ___', options: ['energia', 'som', 'luz', 'movimento'], correct: 0 },
+            { text: 'O eclipse ocorre quando a lua bloqueia a luz do ___', options: ['sol', 'oceano', 'vento', 'trovao'], correct: 0 },
+            { text: 'A gravidade é a força que mantém os objetos ___', options: ['no chão', 'no ar', 'na água', 'no fogo'], correct: 0 },
+            { text: 'A evolução é o processo de ___ das espécies ao longo do tempo', options: ['adaptação', 'destruição', 'congelação', 'duplicação'], correct: 0 },
+            { text: 'O DNA contém as ___ genéticas dos seres vivos', options: ['informações', 'cores', 'sons', 'cheiros'], correct: 0 }
+        ]
+    };
+    
+    gameState.sentences = sentences[level];
+    gameState.currentSentence = 0;
+    
+    showSentence();
+}
+
+function showSentence() {
+    if (gameState.currentSentence >= gameState.sentences.length) {
+        endGame();
+        return;
+    }
+    
+    const sentence = gameState.sentences[gameState.currentSentence];
+    const gameArea = document.getElementById('gameArea');
+    
+    gameArea.innerHTML = `
+        <div style="text-align: center;">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">📝 Mestre das Frases</h2>
+            <p style="margin-bottom: 20px; color: #666;">Nível: <strong>${gameState.level.toUpperCase()}</strong> | Frase ${gameState.currentSentence + 1}/${gameState.sentences.length}</p>
+            
+            <div style="background: white; border: 4px solid #1e3c72; border-radius: 20px; padding: 40px; margin-bottom: 30px; min-height: 150px; display: flex; align-items: center; justify-content: center;">
+                <p style="font-size: 1.8em; line-height: 1.5;">${sentence.text}</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 600px; margin: 0 auto;">
+                ${sentence.options.map((option, i) => `
+                    <button onclick="answerSentence(${i})" style="
+                        padding: 25px;
+                        font-size: 1.3em;
+                        background: white;
+                        border: 3px solid #1e3c72;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                        font-weight: bold;
+                    ">${option}</button>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function answerSentence(selected) {
+    const sentence = gameState.sentences[gameState.currentSentence];
+    
+    if (selected === sentence.correct) {
+        gameState.hits++;
+        gameState.score += (gameState.level === 'dificil' ? 40 : (gameState.level === 'medio' ? 25 : 15));
+        document.getElementById('hits').textContent = gameState.hits;
+        document.getElementById('score').textContent = gameState.score;
+    } else {
+        gameState.errors++;
+        document.getElementById('errors').textContent = gameState.errors;
+    }
+    
+    gameState.currentSentence++;
+    setTimeout(() => showSentence(), 500);
+}
+
+// JOGO 5: Organiza Tudo - Organização Semântica
+function initOrganizeGame(level) {
+    const categories = {
+        facil: {
+            'Animais': ['🐶', '🐱', '🐭', '🐹'],
+            'Frutas': ['🍎', '🍊', '🍌', '🍇']
+        },
+        medio: {
+            'Animais': ['🐶', '🐱', '🐭', '🐹'],
+            'Frutas': ['🍎', '🍊', '🍌', '🍇'],
+            'Veículos': ['🚗', '🚕', '✈️', '🚢']
+        },
+        dificil: {
+            'Animais': ['🐶', '🐱', '🐭', '🐹'],
+            'Frutas': ['🍎', '🍊', '🍌', '🍇'],
+            'Veículos': ['🚗', '🚕', '✈️', '🚢'],
+            'Objetos': ['📚', '✏️', '💻', '📱']
+        }
+    };
+    
+    gameState.categories = categories[level];
+    gameState.allItems = [];
+    Object.values(gameState.categories).forEach(items => {
+        gameState.allItems.push(...items);
+    });
+    gameState.allItems = gameState.allItems.sort(() => Math.random() - 0.5);
+    gameState.organized = {};
+    Object.keys(gameState.categories).forEach(cat => gameState.organized[cat] = []);
+    
+    const gameArea = document.getElementById('gameArea');
+    gameArea.innerHTML = `
+        <div style="text-align: center;">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">🗂️ Organiza Tudo</h2>
+            <p style="margin-bottom: 20px; color: #666;">Nível: <strong>${gameState.level.toUpperCase()}</strong> | Organize os itens nas categorias corretas!</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(${Object.keys(gameState.categories).length}, 1fr); gap: 15px; margin-bottom: 30px;">
+                ${Object.keys(gameState.categories).map(cat => `
+                    <div style="padding: 20px; background: #f0f0f0; border: 3px solid #1e3c72; border-radius: 10px; min-height: 200px;">
+                        <h3 style="margin-bottom: 15px; color: #1e3c72;">${cat}</h3>
+                        <div id="cat-${cat}" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; min-height: 100px;">
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div style="padding: 20px; background: white; border: 3px solid #1e3c72; border-radius: 10px;">
+                <p style="margin-bottom: 15px; font-weight: bold;">Itens para Organizar:</p>
+                <div id="itemsPool" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                    ${gameState.allItems.map((item, i) => `
+                        <button id="item-${i}" onclick="selectOrganizeItem(${i})" style="
+                            padding: 15px;
+                            font-size: 2.5em;
+                            background: white;
+                            border: 3px solid #1e3c72;
+                            border-radius: 10px;
+                            cursor: pointer;
+                        ">${item}</button>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div id="categoryButtons" style="display: none; margin-top: 20px; gap: 10px; justify-content: center;">
+                ${Object.keys(gameState.categories).map(cat => `
+                    <button onclick="placeInCategory('${cat}')" style="
+                        padding: 15px 30px;
+                        font-size: 1.1em;
+                        background: #1e3c72;
+                        color: white;
+                        border: none;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        font-weight: bold;
+                    ">${cat}</button>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function selectOrganizeItem(index) {
+    gameState.selectedItem = { index: index, emoji: gameState.allItems[index] };
+    document.getElementById('categoryButtons').style.display = 'flex';
+    
+    document.querySelectorAll('#itemsPool button').forEach(btn => {
+        btn.style.background = 'white';
+    });
+    document.getElementById(`item-${index}`).style.background = '#ffd700';
+}
+
+function placeInCategory(category) {
+    if (!gameState.selectedItem) return;
+    
+    const correctCategory = Object.keys(gameState.categories).find(cat => 
+        gameState.categories[cat].includes(gameState.selectedItem.emoji)
+    );
+    
+    if (category === correctCategory) {
+        gameState.organized[category].push(gameState.selectedItem.emoji);
+        gameState.hits++;
+        gameState.score += (gameState.level === 'dificil' ? 25 : (gameState.level === 'medio' ? 15 : 10));
+        
+        document.getElementById(`cat-${category}`).innerHTML += `
+            <span style="font-size: 2em;">${gameState.selectedItem.emoji}</span>
+        `;
+        
+        document.getElementById(`item-${gameState.selectedItem.index}`).remove();
+        
+        document.getElementById('hits').textContent = gameState.hits;
+        document.getElementById('score').textContent = gameState.score;
+        
+        if (gameState.hits === gameState.allItems.length) {
+            setTimeout(() => endGame(), 500);
+        }
+    } else {
+        gameState.errors++;
+        document.getElementById('errors').textContent = gameState.errors;
+    }
+    
+    gameState.selectedItem = null;
+    document.getElementById('categoryButtons').style.display = 'none';
+}
+
+// JOGO 6: Mestre das Cartas - Flexibilidade Cognitiva
+function initCardMasterGame(level) {
+    const configs = {
+        facil: { speed: 2500, rules: 2 },
+        medio: { speed: 2000, rules: 3 },
+        dificil: { speed: 1500, rules: 4 }
+    };
+    
+    const config = configs[level];
+    gameState.cardRules = [
+        { name: 'COR', check: (card) => card.color === 'red', desc: 'Vermelho = SIM' },
+        { name: 'NÚMERO', check: (card) => card.number % 2 === 0, desc: 'Par = SIM' },
+        { name: 'NAIPE', check: (card) => card.suit === '♥️', desc: 'Coração = SIM' },
+        { name: 'VALOR', check: (card) => card.number > 5, desc: 'Maior que 5 = SIM' }
+    ];
+    
+    gameState.currentRule = 0;
+    gameState.cardSuits = ['♥️', '♦️', '♣️', '♠️'];
+    gameState.cardColors = { '♥️': 'red', '♦️': 'red', '♣️': 'black', '♠️': 'black' };
+    
+    const gameArea = document.getElementById('gameArea');
+    gameArea.innerHTML = `
+        <div style="text-align: center;">
+            <h2 style="color: #1e3c72; margin-bottom: 20px;">🎴 Mestre das Cartas</h2>
+            <p style="margin-bottom: 10px; color: #666;">Nível: <strong>${gameState.level.toUpperCase()}</strong></p>
+            
+            <div style="padding: 20px; background: #ffd700; border: 3px solid #1e3c72; border-radius: 10px; margin-bottom: 20px;">
+                <h3 style="margin-bottom: 5px;">REGRA ATUAL:</h3>
+                <p id="currentRule" style="font-size: 1.5em; font-weight: bold;"></p>
+            </div>
+            
+            <div id="cardDisplay" style="min-height: 250px; display: flex; align-items: center; justify-content: center; background: white; border: 4px solid #1e3c72; border-radius: 20px; margin-bottom: 20px;">
+            </div>
+            
+            <div style="display: flex; gap: 20px; justify-content: center;">
+                <button onclick="answerCard(true)" style="padding: 20px 40px; font-size: 1.3em; background: #4caf50; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+                    ✔️ SIM
+                </button>
+                <button onclick="answerCard(false)" style="padding: 20px 40px; font-size: 1.3em; background: #f44336; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+                    ❌ NÃO
+                </button>
+            </div>
+        </div>
+    `;
+    
+    generateCard();
+    gameState.cardInterval = setInterval(() => {
+        gameState.currentRule = (gameState.currentRule + 1) % config.rules;
+        generateCard();
+    }, config.speed);
+}
+
+function generateCard() {
+    const suit = gameState.cardSuits[Math.floor(Math.random() * gameState.cardSuits.length)];
+    const number = Math.floor(Math.random() * 10) + 1;
+    const color = gameState.cardColors[suit];
+    
+    gameState.currentCard = { suit, number, color };
+    
+    const rule = gameState.cardRules[gameState.currentRule];
+    document.getElementById('currentRule').textContent = rule.desc;
+    
+    document.getElementById('cardDisplay').innerHTML = `
+        <div style="width: 150px; height: 200px; background: white; border: 4px solid black; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 3em; color: ${color};">
+            <div>${number}</div>
+            <div>${suit}</div>
+        </div>
+    `;
+}
+
+function answerCard(answer) {
+    if (!gameState.currentCard) return;
+    
+    const rule = gameState.cardRules[gameState.currentRule];
+    const correct = rule.check(gameState.currentCard);
+    
+    if (answer === correct) {
+        gameState.hits++;
+        gameState.score += (gameState.level === 'dificil' ? 30 : (gameState.level === 'medio' ? 20 : 10));
+        document.getElementById('hits').textContent = gameState.hits;
+        document.getElementById('score').textContent = gameState.score;
+    } else {
+        gameState.errors++;
+        document.getElementById('errors').textContent = gameState.errors;
+    }
+}
+
+// JOGO 7: Caminho Inteligente - Navegação Espacial
+function initMazeGame(level) {
+    const configs = {
+        facil: { size: 5, moves: 15 },
+        medio: { size: 7, moves: 25 },
+        dificil: { size: 9, moves: 35 }
+    };
+    
+    const config = configs[level];
+    gameState.mazeSize = config.size;
+    gameState.playerPos = { x: 0, y: 0 };
+    gameState.goalPos = { x: config.size - 1, y: config.size - 1 };
+    gameState.movesLeft = config.moves;
+    gameState.obstacles = [];
+    
+    // Gerar obstáculos aleatórios
+    const obstacleCount = Math.floor(config.size * config.size * 0.2);
+    for (let i = 0; i < obstacleCount; i++) {
+        const x = Math.floor(Math.random() * config.size);
+        const y = Math.floor(Math.random() * config.size);
+        if ((x !== 0 || y !== 0) && (x !== gameState.goalPos.x || y !== gameState.goalPos.y)) {
+            gameState.obstacles.push({ x, y });
+        }
+    }
+    
+    renderMaze();
+}
+
+function renderMaze() {
+    const gameArea = document.getElementById('gameArea');
+    const cellSize = 60;
+    
+    let mazeHTML = '<div style="text-align: center;">';
+    mazeHTML += '<h2 style="color: #1e3c72; margin-bottom: 20px;">🧭 Caminho Inteligente</h2>';
+    mazeHTML += `<p style="margin-bottom: 20px; color: #666;">Nível: <strong>${gameState.level.toUpperCase()}</strong> | Movimentos: <strong id="movesLeft">${gameState.movesLeft}</strong></p>`;
+    
+    mazeHTML += `<div style="display: inline-block; border: 4px solid #1e3c72; border-radius: 10px; padding: 10px; background: white;">`;
+    
+    for (let y = 0; y < gameState.mazeSize; y++) {
+        mazeHTML += '<div style="display: flex;">';
+        for (let x = 0; x < gameState.mazeSize; x++) {
+            let content = '';
+            let bg = '#f0f0f0';
+            
+            if (x === gameState.playerPos.x && y === gameState.playerPos.y) {
+                content = '👤';
+                bg = '#90ee90';
+            } else if (x === gameState.goalPos.x && y === gameState.goalPos.y) {
+                content = '🎯';
+                bg = '#ffd700';
+            } else if (gameState.obstacles.some(obs => obs.x === x && obs.y === y)) {
+                content = '🧱';
+                bg = '#ff6b6b';
+            }
+            
+            mazeHTML += `<div style="width: ${cellSize}px; height: ${cellSize}px; border: 2px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 2em; background: ${bg};">${content}</div>`;
+        }
+        mazeHTML += '</div>';
+    }
+    
+    mazeHTML += '</div>';
+    
+    mazeHTML += `
+        <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(3, 80px); gap: 10px; justify-content: center;">
+            <div></div>
+            <button onclick="moveMaze('up')" style="padding: 15px; font-size: 1.5em; background: #1e3c72; color: white; border: none; border-radius: 10px; cursor: pointer;">⬆️</button>
+            <div></div>
+            <button onclick="moveMaze('left')" style="padding: 15px; font-size: 1.5em; background: #1e3c72; color: white; border: none; border-radius: 10px; cursor: pointer;">⬅️</button>
+            <div></div>
+            <button onclick="moveMaze('right')" style="padding: 15px; font-size: 1.5em; background: #1e3c72; color: white; border: none; border-radius: 10px; cursor: pointer;">➡️</button>
+            <div></div>
+            <button onclick="moveMaze('down')" style="padding: 15px; font-size: 1.5em; background: #1e3c72; color: white; border: none; border-radius: 10px; cursor: pointer;">⬇️</button>
+            <div></div>
+        </div>
+    `;
+    
+    mazeHTML += '</div>';
+    gameArea.innerHTML = mazeHTML;
+}
+
+function moveMaze(direction) {
+    let newX = gameState.playerPos.x;
+    let newY = gameState.playerPos.y;
+    
+    if (direction === 'up') newY--;
+    if (direction === 'down') newY++;
+    if (direction === 'left') newX--;
+    if (direction === 'right') newX++;
+    
+    // Verificar limites
+    if (newX < 0 || newX >= gameState.mazeSize || newY < 0 || newY >= gameState.mazeSize) {
+        gameState.errors++;
+        document.getElementById('errors').textContent = gameState.errors;
+        return;
+    }
+    
+    // Verificar obstáculos
+    if (gameState.obstacles.some(obs => obs.x === newX && obs.y === newY)) {
+        gameState.errors++;
+        document.getElementById('errors').textContent = gameState.errors;
+        return;
+    }
+    
+    // Movimento válido
+    gameState.playerPos = { x: newX, y: newY };
+    gameState.movesLeft--;
+    
+    // Verificar vitória
+    if (newX === gameState.goalPos.x && newY === gameState.goalPos.y) {
+        gameState.hits += 10;
+        gameState.score += (gameState.level === 'dificil' ? 100 : (gameState.level === 'medio' ? 75 : 50));
+        document.getElementById('hits').textContent = gameState.hits;
+        document.getElementById('score').textContent = gameState.score;
+        setTimeout(() => endGame(), 500);
+        return;
+    }
+    
+    // Verificar se acabaram os movimentos
+    if (gameState.movesLeft <= 0) {
+        setTimeout(() => endGame(), 500);
+        return;
+    }
+    
+    renderMaze();
 }
     
     // Landing Page Navigation
