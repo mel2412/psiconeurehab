@@ -913,10 +913,10 @@
     <!-- Hero Section -->
     <div class="landing-hero">
         <div class="landing-hero-content">
-            <div class="landing-badge">✨ PLATAFORMA LÍDER EM REABILITAÇÃO COGNITIVA</div>
-            <h1>🧠 Transforme Vidas com Neurociência</h1>
-            <p class="landing-hero-subtitle">A plataforma mais completa de reabilitação cognitiva e treino cerebral do Brasil</p>
-            <p class="landing-hero-description">16 jogos científicos | 6 patologias | Resultados comprovados | Tecnologia de ponta</p>
+            <div class="landing-badge">✨ PLATAFORMA PROFISSIONAL DE NEURORREABILITAÇÃO</div>
+            <h1>Avalie, Reabilite e Acompanhe em Uma Única Plataforma</h1>
+            <p class="landing-hero-subtitle">Ferramenta digital completa para profissionais de saúde que trabalham com reabilitação cognitiva</p>
+            <p class="landing-hero-description">Integre avaliação, intervenção e monitoramento de resultados com tecnologia científica validada</p>
             <div class="landing-cta">
                 <button class="btn-landing btn-landing-primary" onclick="enterApp()">🚀 Começar Agora</button>
                 <button class="btn-landing btn-landing-secondary" onclick="enterApp(); showPricingScreen();">Ver Planos</button>
@@ -926,8 +926,8 @@
     
     <!-- Features Section -->
     <div class="landing-features" id="features">
-        <h2 class="landing-section-title">Por que escolher PsicoNeuro Rehab?</h2>
-        <p class="landing-section-subtitle">Tecnologia de ponta aliada à ciência para resultados reais</p>
+        <h2 class="landing-section-title">Uma Plataforma Completa para Profissionais</h2>
+        <p class="landing-section-subtitle">Tudo que você precisa para oferecer reabilitação cognitiva de excelência</p>
         
         <div class="features-grid">
             <div class="feature-card">
@@ -938,8 +938,8 @@
             
             <div class="feature-card">
                 <div class="feature-icon">🎯</div>
-                <h3>6 Patologias</h3>
-                <p>Protocolos específicos para TDAH, Dislexia, Discalculia, Demências, TEA e AVC</p>
+                <h3>Múltiplas Condições</h3>
+                <p>Protocolos personalizáveis para diversas condições cognitivas e necessidades de reabilitação</p>
             </div>
             
             <div class="feature-card">
@@ -976,8 +976,8 @@
                 <p>Jogos Cognitivos</p>
             </div>
             <div class="stat-item">
-                <h3>6</h3>
-                <p>Patologias Atendidas</p>
+                <h3>+100</h3>
+                <p>Profissionais Ativos</p>
             </div>
             <div class="stat-item">
                 <h3>3</h3>
@@ -1241,16 +1241,19 @@
                         <input type="text" id="newPatientCPF" placeholder="000.000.000-00">
                     </div>
                     <div class="form-group">
-                        <label>Patologia:*</label>
+                        <label>Condição Cognitiva / Objetivo:*</label>
                         <select id="newPatientPathology">
                             <option value="">Selecione...</option>
-                            <option value="tdah">TDAH</option>
-                            <option value="dislexia">Dislexia</option>
-                            <option value="discalculia">Discalculia</option>
-                            <option value="demencia">Demências</option>
-                            <option value="tea">TEA (Autismo)</option>
-                            <option value="avc">AVC</option>
-                            <option value="performance">Performance Cognitiva (Otimização)</option>
+                            <option value="atencao">Atenção e Concentração</option>
+                            <option value="memoria">Memória</option>
+                            <option value="linguagem">Linguagem e Comunicação</option>
+                            <option value="executivas">Funções Executivas</option>
+                            <option value="visuoespacial">Habilidades Visuoespaciais</option>
+                            <option value="neurodesenvolvimento">Transtornos do Neurodesenvolvimento</option>
+                            <option value="neurodegenerativas">Doenças Neurodegenerativas</option>
+                            <option value="lesao_cerebral">Lesão Cerebral Adquirida</option>
+                            <option value="performance">Otimização de Performance</option>
+                            <option value="envelhecimento">Envelhecimento Saudável</option>
                         </select>
                     </div>
                     <button class="btn" onclick="addPatient()">Adicionar Paciente</button>
@@ -1987,19 +1990,29 @@
             let html = '<div style="display: grid; gap: 15px;">';
             currentProfessional.patients.forEach((patient, index) => {
                 const pathologyNames = {
-                    tdah: 'TDAH',
-                    dislexia: 'Dislexia',
-                    discalculia: 'Discalculia',
-                    demencia: 'Demências',
-                    tea: 'TEA',
-                    avc: 'AVC',
-                    performance: 'Performance Cognitiva'
+                    atencao: 'Atenção e Concentração',
+                    memoria: 'Memória',
+                    linguagem: 'Linguagem e Comunicação',
+                    executivas: 'Funções Executivas',
+                    visuoespacial: 'Habilidades Visuoespaciais',
+                    neurodesenvolvimento: 'Transtornos do Neurodesenvolvimento',
+                    neurodegenerativas: 'Doenças Neurodegenerativas',
+                    lesao_cerebral: 'Lesão Cerebral Adquirida',
+                    performance: 'Otimização de Performance',
+                    envelhecimento: 'Envelhecimento Saudável',
+                    // Manter compatibilidade com dados antigos
+                    tdah: 'Transtornos do Neurodesenvolvimento',
+                    dislexia: 'Linguagem e Comunicação',
+                    discalculia: 'Funções Executivas',
+                    demencia: 'Doenças Neurodegenerativas',
+                    tea: 'Transtornos do Neurodesenvolvimento',
+                    avc: 'Lesão Cerebral Adquirida'
                 };
                 html += `
                     <div style="background: white; padding: 20px; border-radius: 10px; border-left: 5px solid #1e3c72;">
                         <h4 style="color: #1e3c72; margin-bottom: 10px;">${patient.name}</h4>
                         <p style="color: #666; margin: 5px 0;"><strong>CPF:</strong> ${patient.cpf}</p>
-                        <p style="color: #666; margin: 5px 0;"><strong>Patologia:</strong> ${pathologyNames[patient.pathology]}</p>
+                        <p style="color: #666; margin: 5px 0;"><strong>Condição:</strong> ${pathologyNames[patient.pathology] || patient.pathology}</p>
                     </div>
                 `;
             });
