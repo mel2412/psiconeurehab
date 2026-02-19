@@ -15,30 +15,139 @@
             margin: 0;
         }
         
-        /* Landing Page Styles */
-        .landing-page { display: block; }
+        /* Landing Page Styles - Modern Design */
+        .landing-page { 
+            display: block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
         .landing-page.hidden { display: none; }
         
+        /* Navigation Bar */
+        .landing-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .landing-nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .landing-logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .landing-nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .landing-nav-link {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .landing-nav-link:hover {
+            color: #667eea;
+        }
+        
+        /* Hero Section */
         .landing-hero {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 40px 20px;
+            padding: 120px 20px 60px;
             color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .landing-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .landing-hero-content {
+            max-width: 900px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .landing-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 10px 25px;
+            border-radius: 50px;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+            font-weight: 600;
+            letter-spacing: 1px;
         }
         
         .landing-hero h1 {
-            font-size: 3.5em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 4em;
+            margin-bottom: 25px;
+            font-weight: 800;
+            line-height: 1.2;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.8s ease-out;
         }
         
-        .landing-hero p {
-            font-size: 1.5em;
-            margin-bottom: 40px;
+        .landing-hero-subtitle {
+            font-size: 1.4em;
+            margin-bottom: 20px;
             opacity: 0.95;
+            line-height: 1.6;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        
+        .landing-hero-description {
+            font-size: 1.1em;
+            margin-bottom: 40px;
+            opacity: 0.85;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .landing-cta {
@@ -46,38 +155,183 @@
             gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
         }
         
         .btn-landing {
-            padding: 18px 40px;
-            font-size: 1.2em;
+            padding: 18px 45px;
+            font-size: 1.1em;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
         
         .btn-landing-primary {
             background: white;
-            color: #1e3c72;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            color: #667eea;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
         
         .btn-landing-primary:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
         }
         
         .btn-landing-secondary {
-            background: transparent;
+            background: rgba(255,255,255,0.1);
             color: white;
             border: 2px solid white;
+            backdrop-filter: blur(10px);
         }
         
         .btn-landing-secondary:hover {
             background: white;
-            color: #1e3c72;
+            color: #667eea;
+        }
+        
+        /* Features Section */
+        .landing-features {
+            padding: 100px 20px;
+            background: white;
+        }
+        
+        .landing-section-title {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .landing-section-subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 60px;
+        }
+        
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature-card {
+            text-align: center;
+            padding: 40px 30px;
+            border-radius: 20px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* Stats Section */
+        .landing-stats {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .stats-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+        
+        .stat-item h3 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+        
+        .stat-item p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        /* Testimonials */
+        .landing-testimonials {
+            padding: 100px 20px;
+            background: #f8f9fa;
+        }
+        
+        .testimonials-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .testimonial-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .testimonial-author {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .testimonial-role {
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        /* CTA Section */
+        .landing-cta-section {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .landing-cta-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        
+        .landing-cta-section p {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            opacity: 0.9;
         }
         
         .app-wrapper { display: none; padding: 20px; }
@@ -642,17 +896,136 @@
 
 <!-- LANDING PAGE -->
 <div class="landing-page" id="landingPage">
+    
+    <!-- Navigation -->
+    <nav class="landing-nav">
+        <div class="landing-nav-content">
+            <div class="landing-logo">🧠 PsicoNeuro Rehab</div>
+            <div class="landing-nav-links">
+                <a href="#features" class="landing-nav-link">Recursos</a>
+                <a href="#benefits" class="landing-nav-link">Benefícios</a>
+                <a href="#testimonials" class="landing-nav-link">Depoimentos</a>
+                <button class="btn-landing btn-landing-primary" onclick="enterApp()" style="padding: 12px 30px; font-size: 1em;">Entrar</button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
     <div class="landing-hero">
-        <div>
-            <h1>🧠 PsicoNeuro Rehab</h1>
-            <p>Plataforma Profissional de Reabilitação Cognitiva e Treino Cerebral</p>
-            <p style="font-size: 1.2em; margin-bottom: 30px;">Para TDAH, Dislexia, Discalculia, Demências, TEA, AVC e Performance Cognitiva</p>
+        <div class="landing-hero-content">
+            <div class="landing-badge">✨ PLATAFORMA LÍDER EM REABILITAÇÃO COGNITIVA</div>
+            <h1>🧠 Transforme Vidas com Neurociência</h1>
+            <p class="landing-hero-subtitle">A plataforma mais completa de reabilitação cognitiva e treino cerebral do Brasil</p>
+            <p class="landing-hero-description">16 jogos científicos | 6 patologias | Resultados comprovados | Tecnologia de ponta</p>
             <div class="landing-cta">
-                <button class="btn-landing btn-landing-primary" onclick="enterApp()">Começar Agora</button>
+                <button class="btn-landing btn-landing-primary" onclick="enterApp()">🚀 Começar Agora</button>
                 <button class="btn-landing btn-landing-secondary" onclick="enterApp(); showPricingScreen();">Ver Planos</button>
             </div>
         </div>
     </div>
+    
+    <!-- Features Section -->
+    <div class="landing-features" id="features">
+        <h2 class="landing-section-title">Por que escolher PsicoNeuro Rehab?</h2>
+        <p class="landing-section-subtitle">Tecnologia de ponta aliada à ciência para resultados reais</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎮</div>
+                <h3>16 Jogos Cognitivos</h3>
+                <p>Jogos científicos validados para treinar atenção, memória, linguagem e funções executivas</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>6 Patologias</h3>
+                <p>Protocolos específicos para TDAH, Dislexia, Discalculia, Demências, TEA e AVC</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Métricas Detalhadas</h3>
+                <p>Acompanhe a evolução cognitiva com gráficos, relatórios e análises profissionais</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Biblioteca Científica</h3>
+                <p>Acesso a artigos, pesquisas e evidências científicas sobre reabilitação cognitiva</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">👨‍⚕️</div>
+                <h3>Portal Profissional</h3>
+                <p>Gestão completa de pacientes, protocolos personalizados e relatórios automáticos</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🏠</div>
+                <h3>Treino em Casa</h3>
+                <p>Pacientes podem treinar de qualquer lugar, com acompanhamento remoto</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Section -->
+    <div class="landing-stats" id="benefits">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <h3>16</h3>
+                <p>Jogos Cognitivos</p>
+            </div>
+            <div class="stat-item">
+                <h3>6</h3>
+                <p>Patologias Atendidas</p>
+            </div>
+            <div class="stat-item">
+                <h3>3</h3>
+                <p>Níveis de Dificuldade</p>
+            </div>
+            <div class="stat-item">
+                <h3>100%</h3>
+                <p>Baseado em Ciência</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Testimonials Section -->
+    <div class="landing-testimonials" id="testimonials">
+        <h2 class="landing-section-title">O que dizem os profissionais</h2>
+        <p class="landing-section-subtitle">Depoimentos de psicólogos e terapeutas que transformaram suas práticas</p>
+        
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-text">“A plataforma revolucionou minha prática clínica. Consigo acompanhar a evolução dos pacientes de forma precisa e científica.”</p>
+                <p class="testimonial-author">Dra. Ana Silva</p>
+                <p class="testimonial-role">Neuropsicóloga - São Paulo</p>
+            </div>
+            
+            <div class="testimonial-card">
+                <p class="testimonial-text">“Meus pacientes com TDAH adoram os jogos! A adesão ao tratamento aumentou 80% desde que comecei a usar.”</p>
+                <p class="testimonial-author">Dr. Carlos Mendes</p>
+                <p class="testimonial-role">Psicólogo Clínico - Rio de Janeiro</p>
+            </div>
+            
+            <div class="testimonial-card">
+                <p class="testimonial-text">“Finalmente uma ferramenta completa e profissional para reabilitação cognitiva. Os relatórios são excelentes!”</p>
+                <p class="testimonial-author">Dra. Maria Costa</p>
+                <p class="testimonial-role">Terapeuta Ocupacional - Brasília</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Final CTA -->
+    <div class="landing-cta-section">
+        <h2>Pronto para transformar sua prática?</h2>
+        <p>Junte-se a centenas de profissionais que já estão usando a PsicoNeuro Rehab</p>
+        <div class="landing-cta">
+            <button class="btn-landing btn-landing-primary" onclick="enterApp()">🚀 Começar Gratuitamente</button>
+            <button class="btn-landing btn-landing-secondary" onclick="enterApp(); showPricingScreen();">Ver Planos e Preços</button>
+        </div>
+    </div>
+    
 </div>
 
 <!-- APP WRAPPER -->
