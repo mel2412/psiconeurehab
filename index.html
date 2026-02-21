@@ -1180,6 +1180,7 @@
                 <input type="password" id="profPassword" placeholder="Sua senha">
             </div>
             <button class="btn" onclick="loginProfessional()">Entrar</button>
+            <button class="link-btn" onclick="showPasswordRecovery('professional')">Esqueci minha senha</button>
             <button class="link-btn" onclick="showRegisterProfessional()">Não tem cadastro? Registre-se</button>
             <button class="link-btn" onclick="backToPortalSelection()">← Voltar</button>
         </div>
@@ -1212,6 +1213,8 @@
             <div class="dashboard-header">
                 <h2 id="professionalWelcome"></h2>
                 <p id="professionalCRP"></p>
+                <p id="professionalInviteCode" style="background: #e8f5e9; padding: 10px; border-radius: 8px; margin: 10px 0; font-weight: bold; color: #2e7d32;"></p>
+                <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">Compartilhe este código com seus pacientes para que eles se vinculem a você no cadastro.</p>
                 <button class="btn btn-secondary" onclick="logoutProfessional()" style="max-width: 200px; margin-top: 15px;">Sair</button>
             </div>
             
@@ -1223,6 +1226,28 @@
             </div>
             
             <div id="profPatientsSection">
+                <h3 style="margin-bottom: 20px;">Visão Geral dos Pacientes</h3>
+                
+                <!-- Métricas Gerais -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                    <div style="background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h4 style="color: #1e3c72; font-size: 2em; margin-bottom: 5px;" id="totalPatients">0</h4>
+                        <p style="color: #666;">Total de Pacientes</p>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h4 style="color: #2e7d32; font-size: 2em; margin-bottom: 5px;" id="activePatients">0</h4>
+                        <p style="color: #666;">Pacientes Ativos (7 dias)</p>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h4 style="color: #f57c00; font-size: 2em; margin-bottom: 5px;" id="totalSessions">0</h4>
+                        <p style="color: #666;">Sessões Realizadas</p>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h4 style="color: #7b1fa2; font-size: 2em; margin-bottom: 5px;" id="avgAdherence">0%</h4>
+                        <p style="color: #666;">Taxa de Adesão</p>
+                    </div>
+                </div>
+                
                 <h3 style="margin-bottom: 20px;">Lista de Pacientes</h3>
                 <div id="patientsList" style="background: #f5f5f5; padding: 30px; border-radius: 15px;">
                     <!-- Lista será preenchida dinamicamente -->
@@ -1306,6 +1331,54 @@
                     <p style="text-align: center; color: #666;">Selecione um paciente para visualizar relatórios detalhados de evolução.</p>
                 </div>
             </div>
+            
+            <!-- Detalhes do Paciente -->
+            <div id="profPatientDetailsSection" style="display: none;">
+                <button class="btn btn-secondary" onclick="backToPatientsList()" style="margin-bottom: 20px;">← Voltar para Lista</button>
+                <h3 style="margin-bottom: 20px;" id="patientDetailsName">Detalhes do Paciente</h3>
+                
+                <!-- Informações Básicas -->
+                <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h4 style="color: #1e3c72; margin-bottom: 15px;">Informações Básicas</h4>
+                    <div id="patientBasicInfo"></div>
+                </div>
+                
+                <!-- Métricas de Desempenho -->
+                <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h4 style="color: #1e3c72; margin-bottom: 15px;">Métricas de Desempenho</h4>
+                    <div id="patientMetrics" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;"></div>
+                </div>
+                
+                <!-- Gráfico de Evolução -->
+                <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h4 style="color: #1e3c72; margin-bottom: 15px;">Evolução da Precisão</h4>
+                    <canvas id="evolutionChart" style="max-height: 300px;"></canvas>
+                </div>
+                
+                <!-- Histórico de Sessões -->
+                <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h4 style="color: #1e3c72; margin-bottom: 15px;">Histórico de Sessões</h4>
+                    <div id="sessionHistory"></div>
+                </div>
+                
+                <!-- Botões de Ação -->
+                <div style="display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+                    <button class="btn" onclick="exportPatientReport()">Exportar Relatório PDF</button>
+                    <button class="btn btn-secondary" onclick="prescribeGamesFromDetails()">Prescrever Jogos</button>
+                </div>
+            </div>
+            
+            <!-- Prescrição de Jogos -->
+            <div id="profPrescriptionSection" style="display: none;">
+                <button class="btn btn-secondary" onclick="backToPatientsList()" style="margin-bottom: 20px;">← Voltar para Lista</button>
+                <h3 style="margin-bottom: 20px;" id="prescriptionPatientName">Prescrever Jogos</h3>
+                
+                <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <p style="color: #666; margin-bottom: 20px;">Selecione os jogos que deseja prescrever para este paciente. Apenas os jogos selecionados aparecerão no portal do paciente.</p>
+                    <div id="gamesCheckboxList" style="display: grid; gap: 10px;"></div>
+                    <button class="btn" onclick="savePrescription()" style="margin-top: 20px;">Salvar Prescrição</button>
+                </div>
+            </div>
         </div>
         
         <!-- Login Paciente -->
@@ -1320,6 +1393,7 @@
                 <input type="password" id="patientPassword" placeholder="Sua senha">
             </div>
             <button class="btn btn-patient" onclick="loginPatient()">Entrar</button>
+            <button class="link-btn" onclick="showPasswordRecovery('patient')">Esqueci minha senha</button>
             <button class="link-btn" onclick="showRegisterPatient()">Não tem cadastro? Registre-se</button>
             <button class="link-btn" onclick="backToPortalSelection()">← Voltar</button>
         </div>
@@ -1353,11 +1427,45 @@
                 </select>
             </div>
             <div class="form-group">
+                <label>Código do Profissional: (opcional)</label>
+                <input type="text" id="patRegInviteCode" placeholder="PROF-XXXX-XXXXXX" style="text-transform: uppercase;">
+                <small style="color: #666; font-size: 0.85em;">Se você foi indicado por um profissional, insira o código dele aqui para vincular sua conta.</small>
+            </div>
+            <div class="form-group">
                 <label>Senha:*</label>
                 <input type="password" id="patRegPassword" required>
             </div>
             <button class="btn btn-patient" onclick="registerPatient()">Cadastrar</button>
             <button class="link-btn" onclick="showPatientLogin()">Já tem cadastro? Faça login</button>
+        </div>
+        
+        <!-- Recuperação de Senha -->
+        <div id="passwordRecoveryScreen" class="screen">
+            <h2 style="text-align: center; margin-bottom: 30px;">Recuperar Senha</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 30px;">Digite seu email ou CPF/CRP cadastrado. Enviaremos um código de recuperação.</p>
+            <div class="form-group">
+                <label id="recoveryLabel">Email ou CPF/CRP:*</label>
+                <input type="text" id="recoveryIdentifier" placeholder="seu@email.com ou 000.000.000-00">
+            </div>
+            <button class="btn" onclick="sendRecoveryCode()" id="sendRecoveryBtn">Enviar Código</button>
+            
+            <div id="recoveryCodeSection" style="display: none; margin-top: 30px;">
+                <div class="form-group">
+                    <label>Código de Recuperação:*</label>
+                    <input type="text" id="recoveryCode" placeholder="000000">
+                </div>
+                <div class="form-group">
+                    <label>Nova Senha:*</label>
+                    <input type="password" id="newPassword" placeholder="Nova senha">
+                </div>
+                <div class="form-group">
+                    <label>Confirmar Nova Senha:*</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirme a nova senha">
+                </div>
+                <button class="btn" onclick="resetPassword()">Redefinir Senha</button>
+            </div>
+            
+            <button class="link-btn" onclick="backToLogin()" style="margin-top: 20px;">← Voltar ao Login</button>
         </div>
         
         <!-- Dashboard Paciente -->
@@ -1879,6 +1987,112 @@
             showScreen('pricingScreen');
         }
         
+        // Recuperação de Senha
+        let recoveryUserType = null;
+        let recoveryUser = null;
+        let generatedCode = null;
+        
+        function showPasswordRecovery(userType) {
+            recoveryUserType = userType;
+            document.getElementById('recoveryCodeSection').style.display = 'none';
+            document.getElementById('recoveryIdentifier').value = '';
+            showScreen('passwordRecoveryScreen');
+        }
+        
+        function backToLogin() {
+            if (recoveryUserType === 'professional') {
+                showProfessionalLogin();
+            } else {
+                showPatientLogin();
+            }
+        }
+        
+        function sendRecoveryCode() {
+            const identifier = document.getElementById('recoveryIdentifier').value.trim();
+            
+            if (!identifier) {
+                alert('Por favor, digite seu email ou CPF/CRP!');
+                return;
+            }
+            
+            // Buscar usuário
+            let found = false;
+            
+            if (recoveryUserType === 'professional') {
+                // Buscar por CRP ou email
+                const allKeys = Object.keys(localStorage);
+                for (let key of allKeys) {
+                    if (key.startsWith('professional_')) {
+                        const prof = JSON.parse(localStorage.getItem(key));
+                        if (prof.crp === identifier || prof.email === identifier) {
+                            recoveryUser = prof;
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                // Buscar por CPF
+                const patient = JSON.parse(localStorage.getItem('patient_' + identifier));
+                if (patient) {
+                    recoveryUser = patient;
+                    found = true;
+                }
+            }
+            
+            if (!found) {
+                alert('Usuário não encontrado!');
+                return;
+            }
+            
+            // Gerar código de 6 dígitos
+            generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+            
+            // Simular envio de email (em produção, usar serviço de email real)
+            alert('Código de recuperação enviado!\n\n[SIMULAÇÃO] Seu código é: ' + generatedCode + '\n\nEm produção, este código seria enviado por email.');
+            
+            // Mostrar seção de código
+            document.getElementById('recoveryCodeSection').style.display = 'block';
+        }
+        
+        function resetPassword() {
+            const code = document.getElementById('recoveryCode').value.trim();
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+            
+            if (!code || !newPass || !confirmPass) {
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+            
+            if (code !== generatedCode) {
+                alert('Código inválido!');
+                return;
+            }
+            
+            if (newPass !== confirmPass) {
+                alert('As senhas não coincidem!');
+                return;
+            }
+            
+            if (newPass.length < 6) {
+                alert('A senha deve ter pelo menos 6 caracteres!');
+                return;
+            }
+            
+            // Atualizar senha
+            recoveryUser.password = newPass;
+            
+            if (recoveryUserType === 'professional') {
+                localStorage.setItem('professional_' + recoveryUser.crp, JSON.stringify(recoveryUser));
+            } else {
+                localStorage.setItem('patient_' + recoveryUser.cpf, JSON.stringify(recoveryUser));
+            }
+            
+            alert('Senha redefinida com sucesso!');
+            backToLogin();
+        }
+        
         // Profissional - Login/Registro
         function showRegisterProfessional() {
             showScreen('professionalRegisterScreen');
@@ -1899,7 +2113,9 @@
                 return;
             }
             
-            const professional = { name, crp, email, password, patients: [] };
+            // Gerar código único de convite para o profissional
+            const inviteCode = 'PROF-' + crp.substring(0, 4) + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+            const professional = { name, crp, email, password, patients: [], inviteCode: inviteCode, prescriptions: {} };
             localStorage.setItem('professional_' + crp, JSON.stringify(professional));
             alert('Cadastro realizado com sucesso!');
             showProfessionalLogin();
@@ -1930,18 +2146,34 @@
         function showProfessionalDashboard() {
             document.getElementById('professionalWelcome').textContent = 'Bem-vindo(a), ' + currentProfessional.name;
             document.getElementById('professionalCRP').textContent = 'CRP: ' + currentProfessional.crp;
+            
+            // Exibir código de convite
+            if (!currentProfessional.inviteCode) {
+                // Gerar código se não existir (para profissionais antigos)
+                currentProfessional.inviteCode = 'PROF-' + currentProfessional.crp.substring(0, 4) + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+                localStorage.setItem('professional_' + currentProfessional.crp, JSON.stringify(currentProfessional));
+                localStorage.setItem('currentProfessional', JSON.stringify(currentProfessional));
+            }
+            
+            const inviteCodeEl = document.getElementById('professionalInviteCode');
+            if (inviteCodeEl) {
+                inviteCodeEl.textContent = 'Código de Convite: ' + currentProfessional.inviteCode;
+            }
+            
             loadPatientsList();
             showScreen('professionalDashboardScreen');
         }
         
         function showProfessionalSection(section) {
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if (event && event.target) event.target.classList.add('active');
             
             document.getElementById('profPatientsSection').style.display = 'none';
             document.getElementById('profAddPatientSection').style.display = 'none';
             document.getElementById('profLibrarySection').style.display = 'none';
             document.getElementById('profReportsSection').style.display = 'none';
+            document.getElementById('profPatientDetailsSection').style.display = 'none';
+            document.getElementById('profPrescriptionSection').style.display = 'none';
             
             if (section === 'patients') {
                 document.getElementById('profPatientsSection').style.display = 'block';
@@ -1953,6 +2185,10 @@
             } else if (section === 'reports') {
                 document.getElementById('profReportsSection').style.display = 'block';
             }
+        }
+        
+        function backToPatientsList() {
+            showProfessionalSection('patients');
         }
         
         function addPatient() {
@@ -1984,8 +2220,44 @@
             
             if (!currentProfessional.patients || currentProfessional.patients.length === 0) {
                 list.innerHTML = '<p style="text-align: center; color: #666;">Nenhum paciente cadastrado ainda.</p>';
+                // Zerar métricas
+                document.getElementById('totalPatients').textContent = '0';
+                document.getElementById('activePatients').textContent = '0';
+                document.getElementById('totalSessions').textContent = '0';
+                document.getElementById('avgAdherence').textContent = '0%';
                 return;
             }
+            
+            // Calcular métricas gerais
+            let totalSessions = 0;
+            let activeCount = 0;
+            const now = new Date();
+            const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            
+            currentProfessional.patients.forEach(patient => {
+                // Buscar dados do paciente
+                const patientData = JSON.parse(localStorage.getItem('patient_' + patient.cpf));
+                if (patientData && patientData.sessions) {
+                    totalSessions += patientData.sessions.length;
+                    
+                    // Verificar se está ativo (jogou nos últimos 7 dias)
+                    const hasRecentSession = patientData.sessions.some(session => {
+                        const sessionDate = new Date(session.date);
+                        return sessionDate >= sevenDaysAgo;
+                    });
+                    if (hasRecentSession) activeCount++;
+                }
+            });
+            
+            const adherence = currentProfessional.patients.length > 0 
+                ? Math.round((activeCount / currentProfessional.patients.length) * 100)
+                : 0;
+            
+            // Atualizar métricas
+            document.getElementById('totalPatients').textContent = currentProfessional.patients.length;
+            document.getElementById('activePatients').textContent = activeCount;
+            document.getElementById('totalSessions').textContent = totalSessions;
+            document.getElementById('avgAdherence').textContent = adherence + '%';
             
             let html = '<div style="display: grid; gap: 15px;">';
             currentProfessional.patients.forEach((patient, index) => {
@@ -2008,16 +2280,298 @@
                     tea: 'Transtornos do Neurodesenvolvimento',
                     avc: 'Lesão Cerebral Adquirida'
                 };
+                // Buscar dados do paciente
+                const patientData = JSON.parse(localStorage.getItem('patient_' + patient.cpf));
+                const sessions = patientData && patientData.sessions ? patientData.sessions.length : 0;
+                const avgAccuracy = patientData && patientData.sessions && patientData.sessions.length > 0
+                    ? Math.round(patientData.sessions.reduce((sum, s) => sum + (s.accuracy || 0), 0) / patientData.sessions.length)
+                    : 0;
+                const lastSession = patientData && patientData.sessions && patientData.sessions.length > 0
+                    ? new Date(patientData.sessions[patientData.sessions.length - 1].date).toLocaleDateString('pt-BR')
+                    : 'Nunca';
+                
                 html += `
-                    <div style="background: white; padding: 20px; border-radius: 10px; border-left: 5px solid #1e3c72;">
-                        <h4 style="color: #1e3c72; margin-bottom: 10px;">${patient.name}</h4>
-                        <p style="color: #666; margin: 5px 0;"><strong>CPF:</strong> ${patient.cpf}</p>
-                        <p style="color: #666; margin: 5px 0;"><strong>Condição:</strong> ${pathologyNames[patient.pathology] || patient.pathology}</p>
+                    <div style="background: white; padding: 20px; border-radius: 10px; border-left: 5px solid #1e3c72; display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: center;">
+                        <div>
+                            <h4 style="color: #1e3c72; margin-bottom: 10px;">${patient.name}</h4>
+                            <p style="color: #666; margin: 5px 0;"><strong>CPF:</strong> ${patient.cpf}</p>
+                            <p style="color: #666; margin: 5px 0;"><strong>Condição:</strong> ${pathologyNames[patient.pathology] || patient.pathology}</p>
+                            <div style="display: flex; gap: 20px; margin-top: 15px; flex-wrap: wrap;">
+                                <div style="background: #e3f2fd; padding: 10px 15px; border-radius: 8px;">
+                                    <strong style="color: #1976d2;">${sessions}</strong>
+                                    <small style="color: #666; display: block;">Sessões</small>
+                                </div>
+                                <div style="background: #e8f5e9; padding: 10px 15px; border-radius: 8px;">
+                                    <strong style="color: #388e3c;">${avgAccuracy}%</strong>
+                                    <small style="color: #666; display: block;">Precisão Média</small>
+                                </div>
+                                <div style="background: #fff3e0; padding: 10px 15px; border-radius: 8px;">
+                                    <strong style="color: #f57c00;">${lastSession}</strong>
+                                    <small style="color: #666; display: block;">Última Sessão</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button class="btn" onclick="viewPatientDetails('${patient.cpf}')" style="white-space: nowrap; padding: 10px 20px;">Ver Detalhes</button>
+                            <button class="btn btn-secondary" onclick="prescribeGames('${patient.cpf}')" style="white-space: nowrap; padding: 10px 20px;">Prescrever Jogos</button>
+                        </div>
                     </div>
                 `;
             });
             html += '</div>';
             list.innerHTML = html;
+        }
+        
+        // Funções de Detalhes do Paciente e Prescrição
+        let currentViewingPatientCPF = null;
+        
+        function viewPatientDetails(cpf) {
+            currentViewingPatientCPF = cpf;
+            const patientData = JSON.parse(localStorage.getItem('patient_' + cpf));
+            
+            if (!patientData) {
+                alert('Paciente não encontrado!');
+                return;
+            }
+            
+            // Ocultar todas as seções
+            document.getElementById('profPatientsSection').style.display = 'none';
+            document.getElementById('profAddPatientSection').style.display = 'none';
+            document.getElementById('profLibrarySection').style.display = 'none';
+            document.getElementById('profReportsSection').style.display = 'none';
+            document.getElementById('profPrescriptionSection').style.display = 'none';
+            
+            // Mostrar seção de detalhes
+            document.getElementById('profPatientDetailsSection').style.display = 'block';
+            
+            // Atualizar título
+            document.getElementById('patientDetailsName').textContent = 'Detalhes: ' + patientData.name;
+            
+            // Informações básicas
+            const pathologyNames = {
+                atencao: 'Atenção e Concentração',
+                memoria: 'Memória',
+                linguagem: 'Linguagem e Comunicação',
+                executivas: 'Funções Executivas',
+                visuoespacial: 'Habilidades Visuoespaciais',
+                neurodesenvolvimento: 'Transtornos do Neurodesenvolvimento',
+                neurodegenerativas: 'Doenças Neurodegenerativas',
+                lesao_cerebral: 'Lesão Cerebral Adquirida',
+                performance: 'Otimização de Performance',
+                envelhecimento: 'Envelhecimento Saudável',
+                tdah: 'Transtornos do Neurodesenvolvimento',
+                dislexia: 'Linguagem e Comunicação',
+                discalculia: 'Funções Executivas',
+                demencia: 'Doenças Neurodegenerativas',
+                tea: 'Transtornos do Neurodesenvolvimento',
+                avc: 'Lesão Cerebral Adquirida'
+            };
+            
+            document.getElementById('patientBasicInfo').innerHTML = `
+                <p style="margin: 5px 0;"><strong>Nome:</strong> ${patientData.name}</p>
+                <p style="margin: 5px 0;"><strong>CPF:</strong> ${patientData.cpf}</p>
+                <p style="margin: 5px 0;"><strong>Data de Nascimento:</strong> ${new Date(patientData.birth).toLocaleDateString('pt-BR')}</p>
+                <p style="margin: 5px 0;"><strong>Condição:</strong> ${pathologyNames[patientData.pathology] || patientData.pathology}</p>
+            `;
+            
+            // Métricas
+            const sessions = patientData.sessions || [];
+            const totalSessions = sessions.length;
+            const avgAccuracy = totalSessions > 0
+                ? Math.round(sessions.reduce((sum, s) => sum + (s.accuracy || 0), 0) / totalSessions)
+                : 0;
+            const totalPoints = patientData.totalPoints || 0;
+            const lastSession = totalSessions > 0
+                ? new Date(sessions[sessions.length - 1].date).toLocaleDateString('pt-BR')
+                : 'Nunca';
+            
+            document.getElementById('patientMetrics').innerHTML = `
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h3 style="color: #1976d2; margin-bottom: 5px;">${totalSessions}</h3>
+                    <p style="color: #666; font-size: 0.9em;">Sessões Realizadas</p>
+                </div>
+                <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h3 style="color: #388e3c; margin-bottom: 5px;">${avgAccuracy}%</h3>
+                    <p style="color: #666; font-size: 0.9em;">Precisão Média</p>
+                </div>
+                <div style="background: #fff3e0; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h3 style="color: #f57c00; margin-bottom: 5px;">${totalPoints}</h3>
+                    <p style="color: #666; font-size: 0.9em;">Pontos Totais</p>
+                </div>
+                <div style="background: #f3e5f5; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h3 style="color: #7b1fa2; margin-bottom: 5px;">${lastSession}</h3>
+                    <p style="color: #666; font-size: 0.9em;">Última Sessão</p>
+                </div>
+            `;
+            
+            // Gráfico simples (sem biblioteca externa)
+            renderEvolutionChart(sessions);
+            
+            // Histórico de sessões
+            if (totalSessions === 0) {
+                document.getElementById('sessionHistory').innerHTML = '<p style="text-align: center; color: #666;">Nenhuma sessão realizada ainda.</p>';
+            } else {
+                let historyHTML = '<div style="display: grid; gap: 10px;">';
+                sessions.slice().reverse().forEach((session, index) => {
+                    historyHTML += `
+                        <div style="background: #f5f5f5; padding: 15px; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong style="color: #1e3c72;">${session.game}</strong>
+                                    <p style="color: #666; margin: 5px 0; font-size: 0.9em;">Nível ${session.level} | ${new Date(session.date).toLocaleDateString('pt-BR')}</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <p style="color: #2e7d32; font-weight: bold; margin: 0;">${session.accuracy}%</p>
+                                    <p style="color: #666; font-size: 0.9em; margin: 0;">${session.score} pontos</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                historyHTML += '</div>';
+                document.getElementById('sessionHistory').innerHTML = historyHTML;
+            }
+        }
+        
+        function renderEvolutionChart(sessions) {
+            const canvas = document.getElementById('evolutionChart');
+            const ctx = canvas.getContext('2d');
+            
+            // Limpar canvas
+            canvas.width = canvas.offsetWidth;
+            canvas.height = 300;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (sessions.length === 0) {
+                ctx.fillStyle = '#666';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Nenhum dado para exibir', canvas.width / 2, canvas.height / 2);
+                return;
+            }
+            
+            // Configurar gráfico
+            const padding = 40;
+            const chartWidth = canvas.width - 2 * padding;
+            const chartHeight = canvas.height - 2 * padding;
+            
+            // Desenhar eixos
+            ctx.strokeStyle = '#ccc';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+            
+            // Desenhar linha de evolução
+            if (sessions.length > 1) {
+                ctx.strokeStyle = '#1e3c72';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                
+                sessions.forEach((session, index) => {
+                    const x = padding + (index / (sessions.length - 1)) * chartWidth;
+                    const y = canvas.height - padding - (session.accuracy / 100) * chartHeight;
+                    
+                    if (index === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+                
+                ctx.stroke();
+                
+                // Desenhar pontos
+                ctx.fillStyle = '#1e3c72';
+                sessions.forEach((session, index) => {
+                    const x = padding + (index / (sessions.length - 1)) * chartWidth;
+                    const y = canvas.height - padding - (session.accuracy / 100) * chartHeight;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                    ctx.fill();
+                });
+            }
+            
+            // Labels
+            ctx.fillStyle = '#666';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Evolução ao longo das sessões', canvas.width / 2, 20);
+        }
+        
+        function prescribeGames(cpf) {
+            currentViewingPatientCPF = cpf;
+            const patientData = JSON.parse(localStorage.getItem('patient_' + cpf));
+            
+            if (!patientData) {
+                alert('Paciente não encontrado!');
+                return;
+            }
+            
+            // Ocultar todas as seções
+            document.getElementById('profPatientsSection').style.display = 'none';
+            document.getElementById('profAddPatientSection').style.display = 'none';
+            document.getElementById('profLibrarySection').style.display = 'none';
+            document.getElementById('profReportsSection').style.display = 'none';
+            document.getElementById('profPatientDetailsSection').style.display = 'none';
+            
+            // Mostrar seção de prescrição
+            document.getElementById('profPrescriptionSection').style.display = 'block';
+            document.getElementById('prescriptionPatientName').textContent = 'Prescrever Jogos: ' + patientData.name;
+            
+            // Listar todos os jogos
+            const allGames = [
+                'Memória de Cartas', 'Caça ao Tesouro', 'Sequenciador', 'Palavras Cruzadas',
+                'Quebra-Cabeça', 'Associação de Imagens', 'Multitarefa Master', 'Palavras Mágicas',
+                'Mestre das Frases', 'Organiza Tudo', 'Mestre das Cartas', 'Caminho Inteligente',
+                'Desafio Matemático', 'Atenção Seletiva', 'Planejamento Estratégico', 'Raciocínio Lógico'
+            ];
+            
+            const prescribedGames = patientData.prescribedGames || [];
+            
+            let html = '';
+            allGames.forEach(game => {
+                const checked = prescribedGames.includes(game) ? 'checked' : '';
+                html += `
+                    <label style="display: flex; align-items: center; padding: 10px; background: #f5f5f5; border-radius: 8px; cursor: pointer;">
+                        <input type="checkbox" value="${game}" ${checked} style="margin-right: 10px; width: 20px; height: 20px;">
+                        <span style="font-size: 1em;">${game}</span>
+                    </label>
+                `;
+            });
+            
+            document.getElementById('gamesCheckboxList').innerHTML = html;
+        }
+        
+        function prescribeGamesFromDetails() {
+            prescribeGames(currentViewingPatientCPF);
+        }
+        
+        function savePrescription() {
+            const checkboxes = document.querySelectorAll('#gamesCheckboxList input[type="checkbox"]');
+            const selectedGames = [];
+            
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    selectedGames.push(cb.value);
+                }
+            });
+            
+            // Atualizar dados do paciente
+            const patientData = JSON.parse(localStorage.getItem('patient_' + currentViewingPatientCPF));
+            patientData.prescribedGames = selectedGames;
+            localStorage.setItem('patient_' + currentViewingPatientCPF, JSON.stringify(patientData));
+            
+            alert('Prescrição salva com sucesso!\n\n' + selectedGames.length + ' jogo(s) prescrito(s).');
+            backToPatientsList();
+        }
+        
+        function exportPatientReport() {
+            alert('Funcionalidade de exportação de relatório em PDF será implementada em breve.\n\nPor enquanto, você pode usar a função de impressão do navegador (Ctrl+P) para salvar como PDF.');
+            window.print();
         }
         
         // Paciente - Login/Registro
@@ -2035,21 +2589,61 @@
             const birth = document.getElementById('patRegBirth').value;
             const pathology = document.getElementById('patRegPathology').value;
             const password = document.getElementById('patRegPassword').value;
+            const inviteCode = document.getElementById('patRegInviteCode').value.trim().toUpperCase();
             
             if (!name || !cpf || !birth || !pathology || !password) {
                 alert('Por favor, preencha todos os campos!');
                 return;
             }
             
+            let linkedProfessional = null;
+            
+            // Se foi fornecido código de convite, vincular ao profissional
+            if (inviteCode) {
+                // Buscar profissional pelo código de convite
+                const allKeys = Object.keys(localStorage);
+                for (let key of allKeys) {
+                    if (key.startsWith('professional_')) {
+                        const prof = JSON.parse(localStorage.getItem(key));
+                        if (prof.inviteCode === inviteCode) {
+                            linkedProfessional = prof;
+                            break;
+                        }
+                    }
+                }
+                
+                if (!linkedProfessional) {
+                    alert('Código de profissional inválido!');
+                    return;
+                }
+            }
+            
             const patient = {
                 name, cpf, birth, pathology, password,
                 sessions: [],
                 totalPoints: 0,
-                totalSessions: 0
+                totalSessions: 0,
+                linkedProfessionalCRP: linkedProfessional ? linkedProfessional.crp : null,
+                prescribedGames: [] // Jogos prescritos pelo profissional
             };
             
             localStorage.setItem('patient_' + cpf, JSON.stringify(patient));
-            alert('Cadastro realizado com sucesso!');
+            
+            // Se vinculado, adicionar paciente à lista do profissional
+            if (linkedProfessional) {
+                linkedProfessional.patients.push({
+                    name: patient.name,
+                    cpf: patient.cpf,
+                    pathology: patient.pathology,
+                    addedBy: linkedProfessional.crp,
+                    linkedAt: new Date().toISOString()
+                });
+                localStorage.setItem('professional_' + linkedProfessional.crp, JSON.stringify(linkedProfessional));
+                alert('Cadastro realizado com sucesso! Você foi vinculado ao profissional ' + linkedProfessional.name);
+            } else {
+                alert('Cadastro realizado com sucesso!');
+            }
+            
             showPatientLogin();
         }
         
